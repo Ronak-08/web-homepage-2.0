@@ -434,7 +434,7 @@ $effect(() => {
 .weather-container .temp {
   font-size: 1.3rem;
   font-weight: 600;
-  color: var(--md-sys-color-primary);
+  color: lch(from var(--md-sys-color-primary) calc(l + 60) c h);
   text-align: center;
 }
 

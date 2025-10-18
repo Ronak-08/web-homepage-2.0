@@ -54,7 +54,7 @@ $effect(() => {
         <option value="color">Colour</option>
         <option value="bgImage">Image</option>
         <option value="customImage">Upload my image</option>
-        <option value="none">Default</option>
+        <option value="default">Default</option>
         </select>
 
       </div>
@@ -124,6 +124,13 @@ $effect(() => {
       </div>
 
     </div>
+    <footer>
+      <p>Made by Ronak © 2025</p>
+      <p>
+        <a href="https://github.com/Ronak-08/web-homepage-2.0">GitHub</a> |
+        Like this website? Try <a href="https://tasksmaster01.netlify.app">Tasksmaster</a>!
+      </p>
+    </footer>
   </main>
 {/if}
 
@@ -134,7 +141,7 @@ $effect(() => {
   height: 100dvh;
   position: fixed;
   top:0;
-  overflow: hidden;
+  overflow: auto;
   z-index: 999;
   width: 100%;
   background-color: var(--md-sys-color-surface-container);
@@ -309,6 +316,17 @@ input[type="range"]::-moz-range-thumb {
   width: 15px;
   border-radius: 50%;
   border: none;
+}
+footer {
+  font-size: 0.9rem;
+  width: 100%;
+  text-align: center;
+  color:  var(--md-sys-color-on-surface-variant);
+  bottom: 8px;
+  margin: auto;
+}
+footer a {
+  color: var(--md-sys-color-primary);
 }
 
 @media (min-width: 768px) {

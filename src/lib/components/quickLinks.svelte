@@ -219,15 +219,15 @@ function addNewLink() {
 .btn-secondary{ 
   border: 2px solid var(--md-sys-color-outline-variant);
   background-color: var(--md-sys-color-surface-container);
-  color: var(--md-sys-color-primary);
+  color: lch(from var(--md-sys-color-primary) calc(l + 60) c h);
 }
 .overlay {
-position: fixed;
-width: 100vw;
+  position: fixed;
+  width: 100vw;
   background-color: rgba(0,0,0,0.6);
-top: 0;
-left: 0;
-height: 100vh;
+  top: 0;
+  left: 0;
+  height: 100vh;
   z-index: 8;
 }
 h2 {

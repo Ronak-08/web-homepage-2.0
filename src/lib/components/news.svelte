@@ -88,7 +88,7 @@ h2 {
 }
 .news-item a:hover {
   background-color: var(--md-sys-color-surface-container-high);
-  color: var(--md-sys-color-primary);
+  color: lch(from var(--md-sys-color-primary) calc(l + 50) c h);
 }
 .title {
   font-weight: 500;

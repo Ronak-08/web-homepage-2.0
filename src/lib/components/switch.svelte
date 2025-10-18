@@ -69,7 +69,7 @@
 
   input:checked + .slider:before {
     transform: translateX(18px);
-    background-color: var(--md-sys-color-on-primary);
+    background-color: var(--md-sys-color-on-primary-container);
   }
 
   .switch-label-text {
