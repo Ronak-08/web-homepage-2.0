@@ -9,7 +9,7 @@ function getFavicon(url) {
 }
 
 const defaultLinks = [
-  { name: "Github", url: "https://www.github.com", id: crypto.randomUUID(), icon: getFavicon('https://github.com') },
+  { name: "Github", url: "https://github.com/Ronak-08/web-homepage-2.0#", id: crypto.randomUUID(), icon: getFavicon('https://github.com') },
 ];
 
 const stored = browser ? localStorage.getItem("quickLinks") : null;
