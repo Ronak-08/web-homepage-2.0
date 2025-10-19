@@ -51,18 +51,12 @@ $effect(() => {
         Background   
        <select class="select-data" name="bg-soruce" bind:value={settings.bgSource} id="bg-source">
         <option value="wallhaven">Wallhaven</option>
-        <option value="color">Colour</option>
         <option value="bgImage">Image</option>
         <option value="customImage">Upload my image</option>
         <option value="default">Default</option>
         </select>
 
       </div>
-       {#if settings.bgSource === 'color'}
-      <div class="settings-card">
-       <input type="color" bind:value={backgroundColor.color}>
-      </div>
-      {/if}
       {#if settings.bgSource === 'customImage'}
         <div class="settings-card-2">
        <div class="wrap new">Darken Image <Switch bind:checked={settings.bgImageDarken} /></div>
@@ -170,10 +164,10 @@ $effect(() => {
   display: flex;
   flex-direction: column;
   margin: 2rem 1rem;
-  max-height: 80%;
+  max-height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0.5rem;
+  padding: 0.4rem;
   gap: 10px;
   flex: 1;
 }
@@ -191,7 +185,6 @@ $effect(() => {
 .settings-card:hover {
  font-weight: 500;
   opacity: 0.95;
-  transform: scale(0.99);
 }
 .select-data {
   width: 30%;
@@ -256,7 +249,7 @@ $effect(() => {
   transition: 0.2s all ease;
 }
 .name-input:focus {
-  border: 2px solid lch(from var(--md-sys-color-primary) calc(l + 30) c h);
+  border: 2px solid var(--md-sys-color-primary);
 }
 .location-input {
  display: flex;
@@ -268,7 +261,7 @@ $effect(() => {
   margin: 1rem;
 }
 .location-input label {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 .location-input input {
   padding: 10px;
@@ -286,53 +279,51 @@ $effect(() => {
 }
 .slider-controls {
   display: flex;
-  gap: 15px;
-  margin: 0.8rem;
+  align-items: center;
+  justify-content: space-around;
+  font-weight: 600;
+  color: var(--md-sys-color-primary);
+  margin: 1rem;
 }
 input[type="range"] {
-  -webkit-appearance: none; 
-  -moz-appearance: none;
-  appearance: none;         
-  background: transparent;  
+  appearance: none;
   cursor: pointer;
-  width: 80%; 
-}
-input[type="range"]::-webkit-slider-runnable-track {
+  width: 80%;
+  height: 4px;
   background: var(--md-sys-color-secondary-container);
-  height: 6px;
-  border-radius: 16px;
+  margin: 0;
 }
+input[type="range"]::-webkit-slider-runnable-track,
 input[type="range"]::-moz-range-track {
   background: var(--md-sys-color-secondary-container);
-  height: 6px;
-  border-radius: 16px;
+  height: 4px;
+  border-radius: 36px;
+  border: none;
 }
 input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
   appearance: none;
-  margin-top: -5px; 
+  height: 25px;
+  width: 7px;
+  border-radius: 12px;
   background: var(--md-sys-color-on-secondary-container);
-  height: 15px;
-  width: 15px;
-  border-radius: 50%; 
   border: none;
 }
 input[type="range"]::-moz-range-thumb {
+  height: 25px;     
+  width: 7px; 
+  border-radius: 12px;
   background: var(--md-sys-color-on-secondary-container);
-  height: 15px;
-  width: 15px;
-  border-radius: 50%;
   border: none;
 }
 footer {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   width: 100%;
   text-align: center;
   color:  var(--md-sys-color-on-surface-variant);
-  margin: auto;
+  margin: 0.6rem 0;
 }
 footer a {
-  color: lch(from var(--md-sys-color-primary) calc(l + 40) c h);
+  color:  var(--md-sys-color-primary);
 }
 
 @media (min-width: 768px) {

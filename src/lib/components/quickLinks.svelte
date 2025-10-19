@@ -7,7 +7,6 @@ let showAddForm = $state(false);
 let { open = false } = $props(); 
 let newName = $state("");
 let newUrl = $state("");
-let hydrated = browser;
 
 function addNewLink() {
   if(newName && newUrl) {
@@ -29,15 +28,9 @@ function addNewLink() {
         target="_blank"
         rel="noopener"
       >
-        {#if hydrated && link.icon}
+        {#if browser && link.icon}
         <img 
           src={link.icon} 
-          alt="{link.name} icon" 
-          class="favicon"
-        />
-          {:else} 
-        <img 
-          src="/web.svg" 
           alt="{link.name} icon" 
           class="favicon"
         />
@@ -217,7 +210,7 @@ function addNewLink() {
 .btn-secondary{ 
   border: 2px solid var(--md-sys-color-outline-variant);
   background-color: var(--md-sys-color-surface-container);
-  color: lch(from var(--md-sys-color-primary) calc(l + 60) c h);
+  color:  var(--md-sys-color-primary);
 }
 .overlay {
   position: fixed;

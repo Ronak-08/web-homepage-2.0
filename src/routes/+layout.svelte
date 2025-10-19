@@ -5,7 +5,6 @@ import {
   backgroundColor,
   fetchWallpapers,
 } from "$lib/settings.svelte.js";
-import favicon from "$lib/assets/favicon.svg";
 import { browser } from "$app/environment";
 import "../app.css";
 
@@ -36,8 +35,6 @@ $effect(async () => {
   if (settings.bgSource === "bgImage" && bgUrl) {
     imageUrl = `url(${bgUrl})`;
     imageIsActive = true;
-    root.style.setProperty("--md-sys-color-primary", "rgb(219 185 249)");
-    root.style.setProperty("--md-sys-color-secondary", "rgb(209 193 217)");
   } else if (settings.bgSource === "wallhaven") {
     try {
       const images = await fetchWallpapers("landscape");
@@ -46,18 +43,12 @@ $effect(async () => {
         if (hourlyWallpaper?.path) {
           imageUrl = `url("${hourlyWallpaper.path}")`;
           imageIsActive = true;
-          const primaryColor = hourlyWallpaper.colors[1];
-          const secondaryColor = hourlyWallpaper.colors[0];
-          root.style.setProperty("--md-sys-color-primary", primaryColor);
-          root.style.setProperty("--md-sys-color-secondary", secondaryColor);
         }
       }
     } catch (error) { console.error('Error fetching wallpaper:', error); }
   } else if (settings.bgSource === "customImage" && customBgImage.image) {
     imageUrl = `url(${customBgImage.image})`;
     imageIsActive = true;
-    root.style.setProperty("--md-sys-color-primary", "rgb(219 185 249)");
-    root.style.setProperty("--md-sys-color-secondary", "rgb(209 193 217)");
   }
 
   if (imageIsActive) {
@@ -67,19 +58,11 @@ $effect(async () => {
   } else {
     root.style.setProperty('--bg-image-url', 'none');
     root.style.setProperty('--bg-image-overlay', 'none');
-
-    if (settings.bgSource === "color") {
-      document.body.style.backgroundColor = backgroundColor.color;
-    } else {
-      document.body.style.backgroundColor = "#22172d";
+    document.body.style.backgroundColor = "#22172d";
     }
-  }
 });
 
 $effect(() => {
-  if (browser) {
-    localStorage.setItem("savedColor", JSON.stringify(backgroundColor.color));
-  }
   if (settings.showNews) {
     document.body.style.overflow = "auto";
   } else {

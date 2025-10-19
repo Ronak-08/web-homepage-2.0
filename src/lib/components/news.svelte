@@ -5,7 +5,7 @@ import { settings } from "$lib/settings.svelte.js";
 let news = $state({ articles: [], loading: true, error: null });
 
 let loading = $derived(news.loading);
-  let error = $derived(news.error);
+let error = $derived(news.error);
 
 async function loadNews() {
   if (!settings.showNews) return;
@@ -88,7 +88,7 @@ h2 {
 }
 .news-item a:hover {
   background-color: var(--md-sys-color-surface-container-high);
-  color: lch(from var(--md-sys-color-primary) calc(l + 50) c h);
+  color:  var(--md-sys-color-primary);
 }
 .title {
   font-weight: 500;

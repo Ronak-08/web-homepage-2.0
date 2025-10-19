@@ -376,7 +376,7 @@ $effect(() => {
 }
 
 .options-dropdown {
-  background-color: var(--md-sys-color-primary-container);
+  background-color: rgb(from var(--md-sys-color-primary-container) r g b / 0.6);
   backdrop-filter: blur(7px);
   border-radius: 13px;
   position: absolute;
@@ -436,7 +436,7 @@ $effect(() => {
 .weather-container .temp {
   font-size: 1.3rem;
   font-weight: 600;
-  color: lch(from var(--md-sys-color-primary) calc(l + 40) c h);
+  color: var(--md-sys-color-primary);
   text-align: center;
 }
 

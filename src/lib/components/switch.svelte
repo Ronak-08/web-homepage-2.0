@@ -61,6 +61,10 @@
     background-color: var(--md-sys-color-on-surface);
     transition: .3s;
     border-radius: 50%;
+    transform: scale(1);
+  }
+  .slider:hover:before {
+    transform: scale(1.1);
   }
 
   input:checked + .slider {
@@ -68,8 +72,11 @@
   }
 
   input:checked + .slider:before {
-    transform: translateX(18px);
-    background-color: var(--md-sys-color-on-primary-container);
+    transform: translateX(18px) scale(1);
+    background-color: var(--md-sys-color-on-primary);
+  }
+  input:checked + .slider:hover:before {
+    transform: translateX(18px) scale(1.1);
   }
 
   .switch-label-text {
