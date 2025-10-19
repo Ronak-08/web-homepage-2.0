@@ -56,20 +56,18 @@ function addNewLink() {
     {/each}
 
     {#if showAddForm}
-      <div onclick={() => showAddForm = !showAddForm} class="overlay"></div>
+      <div onclick={() => {showAddForm = !showAddForm}} class="overlay"></div>
       <div class="add-form" transition:fly="{{ y: -30, duration: 200 }}">
         <h2>New Link</h2>
         <input
           bind:value={newName}
           required
           placeholder="Name"
-          onkeypress={handleKeypress}
           class="input"
         />
         <input
           bind:value={newUrl}
           placeholder="URL"
-          onkeypress={handleKeypress}
           type="url"
           class="input"
         />
@@ -80,7 +78,7 @@ function addNewLink() {
       </div>
     {/if}
       <button 
-        onclick={() => showAddForm = true}
+        onclick={() => {showAddForm = true}}
         class="add-btn"
         transition:fade={{duration: 200}}
       >

@@ -113,7 +113,7 @@ $effect(() => {
 
       {#if settings.showWeather} 
         <div class="location-input">
-      <label for="location">Location</label> <input bind:value={settings.city} type="text" placeholder="Enter Location" id="location" onkeydown={handleKeyDown}>
+      <label for="location">Location</label> <input bind:value={settings.city} type="text" placeholder="Enter Location" id="location" onkeydown={() => {handleKeyDown(event)}}>
     </div>
       {/if}
       <div class="settings-card">

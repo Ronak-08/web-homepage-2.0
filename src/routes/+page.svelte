@@ -342,6 +342,8 @@ $effect(() => {
 }
 .custom-select-wrapper {
   z-index: 1;
+  user-select: none;
+  -moz-user-select: none;
   width: fit-content;
   position: relative;
 }
