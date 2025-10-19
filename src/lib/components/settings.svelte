@@ -142,6 +142,8 @@ $effect(() => {
   position: fixed;
   top:0;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
   z-index: 999;
   width: 100%;
   background-color: var(--md-sys-color-surface-container);
@@ -173,6 +175,7 @@ $effect(() => {
   overflow-x: hidden;
   padding: 0.5rem;
   gap: 10px;
+  flex: 1;
 }
 .settings-card {
   display: flex;
@@ -250,6 +253,10 @@ $effect(() => {
   border-radius: 16px;
   margin: 1rem;
   border: 1px solid var(--md-sys-color-outline);
+  transition: 0.2s all ease;
+}
+.name-input:focus {
+  border: 2px solid lch(from var(--md-sys-color-primary) calc(l + 30) c h);
 }
 .location-input {
  display: flex;
@@ -322,11 +329,10 @@ footer {
   width: 100%;
   text-align: center;
   color:  var(--md-sys-color-on-surface-variant);
-  bottom: 8px;
   margin: auto;
 }
 footer a {
-  color: var(--md-sys-color-primary);
+  color: lch(from var(--md-sys-color-primary) calc(l + 40) c h);
 }
 
 @media (min-width: 768px) {

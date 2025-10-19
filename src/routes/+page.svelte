@@ -2,7 +2,7 @@
 import { browser } from "$app/environment";
 import { settings } from "$lib/settings.svelte.js";
 import { fade } from "svelte/transition";
-import Settings from "$lib/components/settings/+page.svelte";
+import Settings from "$lib/components/settings.svelte";
 import QuickLinks from "$lib/components/quickLinks.svelte";
 import News from "$lib/components/news.svelte";
 import { getWeather } from "$lib/weather.svelte.js";
@@ -434,7 +434,7 @@ $effect(() => {
 .weather-container .temp {
   font-size: 1.3rem;
   font-weight: 600;
-  color: lch(from var(--md-sys-color-primary) calc(l + 60) c h);
+  color: lch(from var(--md-sys-color-primary) calc(l + 40) c h);
   text-align: center;
 }
 
