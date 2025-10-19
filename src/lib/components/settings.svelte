@@ -1,5 +1,5 @@
 <script>
-import { settings,customBgImage ,backgroundColor } from "$lib/settings.svelte.js";
+import { settings,customBgImage} from "$lib/settings.svelte.js";
 import Switch from "$lib/components/switch.svelte";
 import { browser } from "$app/environment";
 import { fade } from "svelte/transition";

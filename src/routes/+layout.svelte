@@ -2,7 +2,6 @@
 import {
   settings,
   customBgImage,
-  backgroundColor,
   fetchWallpapers,
 } from "$lib/settings.svelte.js";
 import { browser } from "$app/environment";
@@ -28,14 +27,15 @@ const darkOverlay = "linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3))";
 $effect(async () => {
   if (!browser) return;
   const _ = hour; 
+  const source = settings.bgSource;
   const root = document.documentElement;
 
   let imageUrl = 'none';
   let imageIsActive = false;
-  if (settings.bgSource === "bgImage" && bgUrl) {
+  if (source === "bgImage" && bgUrl) {
     imageUrl = `url(${bgUrl})`;
     imageIsActive = true;
-  } else if (settings.bgSource === "wallhaven") {
+  } else if (source === "wallhaven") {
     try {
       const images = await fetchWallpapers("landscape");
       if (images && images.length > 0) {
@@ -63,19 +63,12 @@ $effect(async () => {
 });
 
 $effect(() => {
-  if (settings.showNews) {
-    document.body.style.overflow = "auto";
+  if (!browser) return;
+  document.body.style.overflow = settings.showNews ? "auto" : "hidden";
+  if (customBgImage?.image) {
+    localStorage.setItem("image", customBgImage.image);
   } else {
-    document.body.style.overflow = "hidden";
-  }
-});
-$effect(() => {
-  if (browser) {
-    if (customBgImage) {
-      localStorage.setItem("image", customBgImage.image);
-    } else {
-      localStorage.removeItem("custom-background-image");
-    }
+    localStorage.removeItem("custom-background-image");
   }
 });
 

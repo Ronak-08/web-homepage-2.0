@@ -13,7 +13,7 @@ html {
 }
 
 body {
-  min-height: 100vh;
+  min-height: 100svh;
   overflow: hidden;
   background-image: var(--bg-url);
   background-color: var(--md-sys-color-background);

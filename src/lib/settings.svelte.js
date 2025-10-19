@@ -1,10 +1,10 @@
 import { browser } from "$app/environment";
 const defaultSettings = {
-  bgSource: 'default',
+  bgSource: 'bgImage',
   showClock: true,
   twelvehrClock: false,
   greeting: false,
-  name: "user",
+  name: "User",
   bgImageDarken: true,
   bgImageBlur: 4,
   showWeather: false,
@@ -13,9 +13,6 @@ const defaultSettings = {
   topBar: false,
   quickLinks: true,
 };
-
-const initialColor = (browser && JSON.parse(localStorage.getItem("savedColor"))) || '#ffffff';
-export let backgroundColor = $state({color: initialColor});
 
 const initialImage = (browser && localStorage.getItem("image")) || null;
 export const customBgImage = $state({image: initialImage});

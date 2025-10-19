@@ -31,12 +31,14 @@ const searchEngines = {
   chatgpt: "https://chatgpt.com/?q=",
 };
 
-
-async function fetchWeather() {
-  weatherData = await getWeather(settings.city);
-}
-
-onMount(fetchWeather);
+let debounceTimer;
+$effect(() => {
+  if (!settings.city) return;
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(async () => {
+    weatherData = await getWeather(settings.city);
+  }, 2000);
+});
 
 async function getSuggestions() {
   if (timeoutId) {
@@ -427,11 +429,14 @@ $effect(() => {
   display: flex;
   flex-direction: column;
   bottom: 10px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   right: 15px;
   width: fit-content;
   padding: 0.5rem 1.3rem;
   border-radius: 36px;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 .weather-container .temp {
   font-size: 1.3rem;
