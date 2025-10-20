@@ -7,13 +7,8 @@
   padding: 0;
   border: 0;
 }
-
-html {
-  height: 100%;
-}
-
 body {
-  min-height: 100svh;
+  min-height: 100dvh;
   overflow: hidden;
   background-image: var(--bg-url);
   background-color: var(--md-sys-color-background);
@@ -38,6 +33,7 @@ body::before {
   background-position: center;
   filter: blur(var(--bg-image-blur, 0px));
   transition: filter 0.2s ease-out;
+  height: 100dvh;
 }
 
 

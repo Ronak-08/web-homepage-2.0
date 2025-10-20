@@ -110,6 +110,8 @@ function addNewLink() {
 }
 .link-item img {
   border-radius: 32px;
+  width: 33px;
+  height: 33px;
   background-color: var(--md-sys-color-surface-container-highest);
   border: 1px solid var(--md-sys-color-outline-variant);
 }
@@ -244,7 +246,8 @@ h2 {
     max-width: 50vw;
   }
 .link-item img {
-    width: 40px;
+    width: 35px;
+    height: 35px;
   }
 .link-name {
    font-size: 0.90rem;
