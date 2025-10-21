@@ -10,8 +10,7 @@
 body {
   min-height: 100dvh;
   overflow: hidden;
-  background-image: var(--bg-url);
-  background-color: var(--md-sys-color-background);
+  background: var(--md-sys-color-background);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -32,7 +31,8 @@ body::before {
   background-size: cover;
   background-position: center;
   filter: blur(var(--bg-image-blur, 0px));
-  transition: filter 0.2s ease-out;
+  transition: filter 0.2s ease-out, opacity 0.8s ease;
+  opacity: var(--bg-opacity,0);
   height: 100dvh;
 }
 
