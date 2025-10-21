@@ -270,10 +270,14 @@ $effect(() => {
   <News />
 {/if}
 
-{#if weatherData && settings.showWeather}
+{#if settings.showWeather}
   <div class="weather-container">
+    {#if weatherData}
     <p class="temp">{weatherData.temperature}°C</p>
     <p class="desc">{weatherData.description}</p>
+    {:else}
+      <p class="desc">Loading...</p>
+    {/if}
   </div>
 {/if}
 

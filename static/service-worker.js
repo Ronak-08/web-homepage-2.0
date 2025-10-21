@@ -1,15 +1,9 @@
-/// <reference no-default-lib="true"/>
-/// <reference lib="esnext" />
-/// <reference lib="webworker" />
-/// <reference types="@sveltejs/kit" />
-/// <reference types="../.svelte-kit/ambient.d.ts" />
-
 import { build, files, version } from '$service-worker';
 
-const self = /** @type {ServiceWorkerGlobalScope} */ (/** @type {unknown} */ (globalThis.self));
+const self = globalThis.self;
 
 const CORE_CACHE = `core-cache-${version}`;
-const IMAGE_CACHE = `image-cache-v1`; 
+const IMAGE_CACHE = `image-cache-v1`;
 
 const ASSETS = [...build, ...files];
 
@@ -17,7 +11,7 @@ self.addEventListener('install', (event) => {
 	event.waitUntil(
 		caches.open(CORE_CACHE)
 			.then((cache) => cache.addAll(ASSETS))
-			.then(() => self.skipWaiting()) 
+			.then(() => self.skipWaiting())
 	);
 });
 
@@ -45,7 +39,11 @@ self.addEventListener('fetch', (event) => {
 		return;
 	}
 
-	if (event.request.destination === 'image' || url.hostname === 'picsum.photos' || url.hostname === 'w.wallhaven.cc') {
+	if (
+		event.request.destination === 'image' ||
+		url.hostname === 'picsum.photos' ||
+		url.hostname === 'w.wallhaven.cc'
+	) {
 		event.respondWith(
 			caches.open(IMAGE_CACHE).then(async (cache) => {
 				const cachedResponse = await cache.match(event.request);
@@ -60,6 +58,7 @@ self.addEventListener('fetch', (event) => {
 		);
 		return;
 	}
+
 	event.respondWith(
 		fetch(event.request).catch(async () => {
 			const cache = await caches.open(CORE_CACHE);
