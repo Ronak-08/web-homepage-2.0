@@ -2,11 +2,19 @@
 import { settings, customBgImage, fetchWallpapers } from "$lib/settings.svelte.js";
 import { browser } from "$app/environment";
 import "../app.css";
+    import { onMount } from "svelte";
 
 let { children } = $props();
-
 let currentHour = $state(new Date().getHours());
 let wallpapers = $state([]);
+
+onMount(() => {
+  if ('serviceWorker' in navigator) {
+	addEventListener('load', function () {
+		navigator.serviceWorker.register('/service-worker.js');
+	});
+}
+})
 
 async function getWallpaper() {
   if (!browser) return;
@@ -82,4 +90,6 @@ $effect(() => {
 });
 </script>
 
+<main>
 {@render children?.()}
+</main>
