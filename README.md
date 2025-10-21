@@ -10,8 +10,11 @@ An upgraded version of my earlier **Web Homepage** — now cleaner, faster, and 
 ---
 
 ## 🖼️ Images  
-Coming soon 👀
-
+<p align="center">
+<img src="https://raw.githubusercontent.com/Ronak-08/web-homepage-2.0/refs/heads/main/images/image.png" alt="image" width="60%"/>
+<img src="https://raw.githubusercontent.com/Ronak-08/web-homepage-2.0/refs/heads/main/images/Customizable.png" alt="image" width="60%"/>
+<img src="https://raw.githubusercontent.com/Ronak-08/web-homepage-2.0/refs/heads/main/images/Responsive.png" alt="image" width="60%"/>
+</p>
 ---
 
 ## ✨ Features  
