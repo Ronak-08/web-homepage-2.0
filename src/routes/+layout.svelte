@@ -8,13 +8,20 @@ let { children } = $props();
 let currentHour = $state(new Date().getHours());
 let wallpapers = $state([]);
 
+
 onMount(() => {
   if ('serviceWorker' in navigator) {
-	addEventListener('load', function () {
-		navigator.serviceWorker.register('/service-worker.js');
-	});
-}
-})
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js', { type: 'module' })
+        .then((registration) => {
+          console.log('Service worker registered!', registration);
+        })
+        .catch((err) => {
+          console.error('Service worker registration failed:', err);
+        });
+    });
+  }
+});
 
 async function getWallpaper() {
   if (!browser) return;
