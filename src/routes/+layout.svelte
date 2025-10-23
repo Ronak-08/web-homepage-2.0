@@ -2,7 +2,7 @@
 import { settings, customBgImage, fetchWallpapers } from "$lib/settings.svelte.js";
 import { browser } from "$app/environment";
 import "../app.css";
-    import { onMount } from "svelte";
+import { onMount } from "svelte";
 
 let { children } = $props();
 let currentHour = $state(new Date().getHours());
@@ -10,6 +10,7 @@ let wallpapers = $state([]);
 
 
 onMount(() => {
+  setWallpaper();
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/service-worker.js', { type: 'module' })
@@ -49,7 +50,7 @@ function hourlyRandom() {
 let random = $state(hourlyRandom());
 let bgUrl = $state("");
 
-$effect(async () => {
+const setWallpaper = async () => {
   if (!browser) return;
   if (settings.bgSource === "wallhaven") {
     if (!wallpapers.length) await getWallpaper();
@@ -61,10 +62,6 @@ $effect(async () => {
   else if(settings.bgSource === "bgImage") {
     bgUrl = `https://picsum.photos/seed/${random}/1080.webp`;
   }
-});
-
-$effect(() => {
-  if (!browser || !bgUrl) return;
   const img = new Image();
   img.src = bgUrl;
   img.onload = () => {
@@ -73,11 +70,11 @@ $effect(() => {
     document.documentElement.style.setProperty("--bg-opacity", "1");
     document.documentElement.style.transition = "background-image 0.4s ease-out, filter 0.2s ease-out";
   };
-});
+};
 
 $effect(() => {
   if (!browser) return;
-
+  if(settings.bgSource) setWallpaper();
   document.body.style.overflow = settings.showNews ? "auto" : "hidden";
 
   if (customBgImage?.image) {
@@ -98,5 +95,5 @@ $effect(() => {
 </script>
 
 <main>
-{@render children?.()}
+  {@render children?.()}
 </main>
