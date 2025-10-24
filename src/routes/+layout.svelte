@@ -10,7 +10,6 @@ let wallpapers = $state([]);
 
 
 onMount(() => {
-  setWallpaper();
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/service-worker.js', { type: 'module' })
@@ -74,6 +73,8 @@ const setWallpaper = async () => {
 
 $effect(() => {
   if (!browser) return;
+  const _currentHour = currentHour;
+  const _random = random;
   if(settings.bgSource) setWallpaper();
   document.body.style.overflow = settings.showNews ? "auto" : "hidden";
 
