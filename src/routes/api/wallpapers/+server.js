@@ -12,7 +12,7 @@ export async function GET({ url }) {
     const response = await fetch(apiURL, {
       headers: {
         'X-API-Key': WALLHAVEN_API_KEY,
-        'User-Agent': 'YourAppName/1.0'
+        'User-Agent': 'web-homepage/1.0'
       }
     });
 

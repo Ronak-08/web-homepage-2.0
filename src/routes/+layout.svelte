@@ -1,5 +1,5 @@
 <script>
-import { settings, customBgImage, fetchWallpapers } from "$lib/settings.svelte.js";
+import { settings, customBgImage} from "$lib/settings.svelte.js";
 import { browser } from "$app/environment";
 import "../app.css";
 import { onMount } from "svelte";
@@ -23,15 +23,56 @@ onMount(() => {
   }
 });
 
-async function getWallpaper() {
-  if (!browser) return;
-  try {
-    const data = await fetchWallpapers("landscape");
-    if (data?.length) {
-      wallpapers = data;
+const CACHE_DURATION = 1000 * 60 * 180; 
+
+async function fetchWallpapers(query = '', page = 1, sorting = 'random') {
+  const cacheKey = `wallpapers-${query}-${page}-${sorting}`;
+
+  const cachedData = localStorage.getItem(cacheKey);
+  if (cachedData) {
+    try {
+      const parsed = JSON.parse(cachedData);
+      const now = Date.now();
+
+      if (now - parsed.timestamp < CACHE_DURATION) {
+        console.log('Returning cached wallpaper data from localStorage');
+        return parsed.data || [];
+      } else {
+        localStorage.removeItem(cacheKey);
+      }
+    } catch (e) {
+      console.error('Error parsing cached data:', e);
+      localStorage.removeItem(cacheKey);
     }
+  }
+
+  try {
+    const params = new URLSearchParams({
+      q: query,
+      sorting: sorting,
+      page: page,
+      purity: '110',
+      resolutions: '1920x1080,2560x1440,3840x2160',
+      at_least: '1920x1080'
+    });
+
+    const response = await fetch(`/api/wallpapers?${params}`);
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    localStorage.setItem(cacheKey, JSON.stringify({
+      data: data.data,
+      timestamp: Date.now()
+    }));
+
+    return data.data || [];
   } catch (error) {
-    console.error("Failed to fetch wallpapers:", error);
+    console.error('Error fetching wallpapers:', error);
+    return [];
   }
 }
 
@@ -51,15 +92,29 @@ let bgUrl = $state("");
 
 const setWallpaper = async () => {
   if (!browser) return;
-  if (settings.bgSource === "wallhaven") {
-    if (!wallpapers.length) await getWallpaper();
-    if(wallpapers.length > 0) {
+  customBgImage.image = localStorage.getItem("custom-background-image") || customBgImage.image;
+  if(settings.bgSource === "customImage" && customBgImage?.image) {
+    bgUrl = customBgImage.image;
+  }
+  else if (settings.bgSource === "wallhaven") {
+    if (!wallpapers.length)
+      try {
+        const data = await fetchWallpapers("landscape"); 
+        if(data?.length) {
+          wallpapers = data;
+        }
+      } catch (error) {
+      console.error("Failed to fetch wallpapers:", error);
+    }
+    if(wallpapers?.length) {
       const index = currentHour % wallpapers.length;
-      bgUrl = wallpapers[index]?.path || "";
+      bgUrl = wallpapers[index]?.path || `https://picsum.photos/seed/${random}/1080.webp`;
     }
   }
   else if(settings.bgSource === "bgImage") {
     bgUrl = `https://picsum.photos/seed/${random}/1080.webp`;
+  } else {
+    return;
   }
   const img = new Image();
   img.src = bgUrl;
@@ -75,16 +130,23 @@ $effect(() => {
   if (!browser) return;
   const _currentHour = currentHour;
   const _random = random;
-  if(settings.bgSource) setWallpaper();
-  document.body.style.overflow = settings.showNews ? "auto" : "hidden";
+  const _bgSource = settings.bgSource;
+  const _customBg = customBgImage?.image;
+  setWallpaper();
+});
 
+$effect(() => {
+  if (!browser) return;
   if (customBgImage?.image) {
     localStorage.setItem("custom-background-image", customBgImage.image);
   } else {
     localStorage.removeItem("custom-background-image");
   }
 });
-
+$effect(() => {
+  if (!browser) return;
+  document.body.style.overflow = settings.showNews ? "auto" : "hidden";
+});
 $effect(() => {
   const interval = setInterval(() => {
     currentHour = new Date().getHours();
