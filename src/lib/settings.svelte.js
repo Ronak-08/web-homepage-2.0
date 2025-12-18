@@ -10,12 +10,9 @@ const defaultSettings = {
   showWeather: false,
   showNews: false,
   city: null,
-  topBar: false,
   quickLinks: true,
 };
 
-const initialImage = (browser && localStorage.getItem("image")) || null;
-export const customBgImage = $state({image: initialImage});
 
 function loadSettings() {
   if(!browser) {

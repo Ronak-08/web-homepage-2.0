@@ -22,20 +22,6 @@ body {
   font-size: 1rem;
   line-height: 1.5;
 }
-body::before {
-  content: '';
-  position: fixed; 
-  inset: 0; 
-  z-index: -1; 
-  background-image: var(--bg-image-overlay, none), var(--bg-image-url, none);
-  background-size: cover;
-  background-position: center;
-  filter: blur(var(--bg-image-blur, 0px));
-  transition: filter 0.2s ease-out, opacity 0.8s ease;
-  opacity: var(--bg-opacity,0);
-  height: 100dvh;
-}
-
 
 img, picture, video, canvas, svg {
   display: block;

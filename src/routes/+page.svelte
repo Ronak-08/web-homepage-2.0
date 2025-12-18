@@ -245,7 +245,7 @@ $effect(() => {
     <button type="submit" class="search-btn"
     ><span class="material-symbols-outlined"> search </span></button
     >
-    {#if suggestions.length > 0 && query.trim().length > 3 && showSuggestions}
+    {#if suggestions.length > 0 && query.trim().length >= 1 && showSuggestions}
       <div class="overlay" onclick={closeSuggestions}></div>
       <ul class="suggestions-list">
         {#each suggestions as suggestion (suggestion)}
@@ -298,6 +298,8 @@ $effect(() => {
   -ms-user-select: none;
   text-shadow: 1px 2px 4px var(--md-sys-color-shadow);
   align-items: center;
+  opacity: 0.9;
+  backdrop-filter: blur(4px);
   justify-content: center;
 }
 .ampm {

@@ -1,5 +1,5 @@
 <script>
-import { settings,customBgImage} from "$lib/settings.svelte.js";
+import { settings } from "$lib/settings.svelte.js";
 import Switch from "$lib/components/switch.svelte";
 import { browser } from "$app/environment";
 import { fade } from "svelte/transition";
@@ -12,18 +12,21 @@ $effect(() => {
   }
 });
 let fileName = $state('No File Chosen');
+let initialImage = (browser && localStorage.getItem("image")) || null;
+let customBgImage = $state(initialImage);
+
 function handleImageUpload(event) {
- const files = event.target.files[0];
+  const files = event.target.files[0];
   if(!files) return;
   fileName = files.name;
   const read = new FileReader();
   read.onload = (e) => {
-   customBgImage.image = e.target.result;
+    customBgImage = e.target.result;
   };
   read.readAsDataURL(files);
 }
 function clearCustomImage() {
-  customBgImage.image = null;
+  customBgImage = null;
 }
 function handleKeyDown(event) {
   if(event.key === 'Enter') {
@@ -31,9 +34,6 @@ function handleKeyDown(event) {
   } 
 }
 
-$effect(() => {
-		document.documentElement.style.setProperty('--bg-image-blur', `${settings.bgImageBlur}px`);
-	});
 
 
 </script>
@@ -49,17 +49,16 @@ $effect(() => {
     <div class="settings-container">
       <div class="settings-card">
         Background   
-       <select class="select-data" name="bg-soruce" bind:value={settings.bgSource} id="bg-source">
-        <option value="wallhaven">Wallhaven</option>
-        <option value="bgImage">Image</option>
-        <option value="customImage">Upload my image</option>
-        <option value="default">Default</option>
+        <select class="select-data" name="bg-soruce" bind:value={settings.bgSource} id="bg-source">
+          <option value="bgImage">Image</option>
+          <option value="customImage">Upload my image</option>
+          <option value="default">Default</option>
         </select>
 
       </div>
-      {#if settings.bgSource === 'customImage'}
+      {#if settings.bgSource === 'customBgImage'}
         <div class="settings-card-2">
-       <div class="wrap new">Darken Image <Switch bind:checked={settings.bgImageDarken} /></div>
+          <div class="wrap new">Darken Image <Switch bind:checked={settings.bgImageDarken} /></div>
           <div class="wrap">
             <input class="image-input" type="file" id="bg-upload" accept="image/png, image/jpeg, image/webp, image/gif" onchange={handleImageUpload}>
             <label for="bg-upload" class="file-label">{fileName}</label>
@@ -69,7 +68,7 @@ $effect(() => {
           </div>
         </div>
       {/if}
-      {#if settings.bgSource === 'customImage' || settings.bgSource === 'wallhaven' || settings.bgSource === 'bgImage'}
+      {#if settings.bgSource === 'customBgImage' || settings.bgSource === 'bgImage'}
         <div class="setting-slider">
           <label for="blur-slider">Background Blur</label>
           <div class="slider-controls">
@@ -90,15 +89,15 @@ $effect(() => {
         Clock   <Switch bind:checked={settings.showClock} />
       </div>
       {#if settings.showClock}
-      <div class="settings-card">
-        12hr Clock   <Switch bind:checked={settings.twelvehrClock} />
-      </div>
+        <div class="settings-card">
+          12hr Clock   <Switch bind:checked={settings.twelvehrClock} />
+        </div>
       {/if}
       <div class="settings-card">
         Greeting  <Switch bind:checked={settings.greeting} />
       </div>
       {#if settings.greeting} 
-         <input class="name-input" max="30" type="text" bind:value={settings.name} placeholder="Enter name...">
+        <input class="name-input" max="30" type="text" bind:value={settings.name} placeholder="Enter name...">
       {/if}
 
       <div class="settings-card">
@@ -107,8 +106,8 @@ $effect(() => {
 
       {#if settings.showWeather} 
         <div class="location-input">
-      <label for="location">Location</label> <input bind:value={settings.city} type="text" placeholder="Enter Location" id="location" onkeydown={() => {handleKeyDown(event)}}>
-    </div>
+          <label for="location">Location</label> <input bind:value={settings.city} type="text" placeholder="Enter Location" id="location" onkeydown={() => {handleKeyDown(event)}}>
+        </div>
       {/if}
       <div class="settings-card">
         News <Switch bind:checked={settings.showNews} />
@@ -183,7 +182,7 @@ $effect(() => {
   transition: 0.3s all ease;
 }
 .settings-card:hover {
- font-weight: 500;
+  font-weight: 500;
   opacity: 0.95;
 }
 .select-data {
@@ -197,11 +196,11 @@ $effect(() => {
   font-weight: 600;
 }
 .settings-card-2 {
-    display: flex;
+  display: flex;
   flex-direction: column;
-    gap: 1rem;
+  gap: 1rem;
   margin-bottom: 1.2rem;
-  }
+}
 .image-input {
   position:absolute;
   opacity: 0;
@@ -252,7 +251,7 @@ $effect(() => {
   border: 2px solid var(--md-sys-color-primary);
 }
 .location-input {
- display: flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: var(--md-sys-color-surface-container-high);
