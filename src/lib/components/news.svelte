@@ -58,10 +58,10 @@ function formatDate(isoDate) {
 <style>
 .news-container {
   max-height: 80vh;
-  margin: 1.2rem;
+  margin: 1.1rem;
   position: relative;
   top: 80px; 
-  padding: 0.5rem;
+  padding: 0.4rem;
   background-color: var(--md-sys-color-surface-container-low);
   overflow-y: auto;
   border-radius: 16px;
@@ -83,12 +83,13 @@ h2 {
   color: var(--md-sys-color-on-surface);
   background-color: var(--md-sys-color-surface-container);
   border-radius: 13px;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
   word-spacing: 2.3;
 }
 .news-item a:hover {
   background-color: var(--md-sys-color-surface-container-high);
   color:  var(--md-sys-color-primary);
+  transform: scale(1.02);
 }
 .title {
   font-weight: 500;
@@ -104,7 +105,21 @@ h2 {
 }
 .loading {
   text-align: center;
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 80;
+  animation: pulse 0.5s infinite;
   margin: 1rem;
+}
+@keyframes pulse {
+0% {
+  opacity: 0;
+}
+50% {
+  opacity: 0.5;
+}
+100% {
+  opacity: 1;
+}
 }
 @media (min-width: 768px) {
 

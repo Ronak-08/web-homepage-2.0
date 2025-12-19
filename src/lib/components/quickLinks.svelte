@@ -136,7 +136,7 @@ function addNewLink() {
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  font-size: 0.8rem;
+  font-size: 0.77rem;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -153,7 +153,6 @@ function addNewLink() {
   border-radius: 26px;
   font-size: 1.5rem;
   cursor: pointer;
-  transition: all 0.2s ease;
   background-color: var(--md-sys-color-tertiary-container);
   color: var(--md-sys-color-on-tertiary-container);
   width: 40px;
@@ -161,7 +160,8 @@ function addNewLink() {
   transition: 0.2s all ease;
 }
 .add-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.94);
+  border-radius: 13px;
 }
 
 .add-form {
@@ -176,7 +176,7 @@ function addNewLink() {
   padding: 1.5rem;
   border-radius: 13px;
   z-index: 9;
-  box-shadow: -2px 2px 8px var(--md-sys-color-shadow);
+  box-shadow: -1px 1px 10px rgba(0,0,0,0.5);
   background-color:var(--md-sys-color-surface-container);
 }
 
@@ -197,7 +197,7 @@ function addNewLink() {
 
 .form-actions {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.5rem;
   margin-top: 1rem;
   justify-content: flex-end;
 }
@@ -208,6 +208,12 @@ function addNewLink() {
   min-width: fit-content;
   padding: 0.4rem 1rem;
   font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.btn:active {
+  border-radius: 13px;
+  transform: scale(0.99);
+  opacity: 0.96;
 }
 .btn-secondary{ 
   border: 2px solid var(--md-sys-color-outline-variant);

@@ -1,89 +1,79 @@
 <script>
-  import { settings } from "$lib/settings.svelte.js";
-  import { browser } from "$app/environment";
-  import "../app.css";
-  import { onMount } from "svelte";
+import { browser } from '$app/environment';
+import { settings } from '$lib/settings.svelte';
+import '../app.css';
 
-  let { children } = $props();
+let { children, data } = $props();
 
-  let currentHour = $state(new Date().getHours());
-  let random = $state(null);
-  let isMounted = $state(false);
-  let customBgImage = (browser && localStorage.getItem("image") || null);
+let serverUrl = `https://picsum.photos/seed/${data.seed}/1920/1080.webp`;
+let customBgImage = (browser && localStorage.getItem("image") || "");
 
-  let bgStyle = $derived.by(() => {
-    if (!isMounted) return 'none';
+let bgUrl = $state(serverUrl);
 
-    switch (settings.bgSource) {
-      case 'bgImage':
-        return `url(https://picsum.photos/seed/${random}/1920/1080)`;
-      case 'customBgImage':
-        return customBgImage ? `url(${customBgImage})` : 'none';
-      default:
-        return 'none';
-    }
-  });
-  
-  onMount(() => {
-    random = hourlyRandom();
-    isMounted = true;
-  });
+$effect(() => {
+  if (!browser) return;
 
-  function hourlyRandom() {
-    const hour = new Date().getHours();
-    const seed = localStorage.getItem('hourlySeed');
-    const d = seed ? JSON.parse(seed) : {};
-    if (d.hour === hour) return d.value;
-    const value = Math.random();
-    localStorage.setItem('hourlySeed', JSON.stringify({ hour, value }));
-    return value;
+   if(settings.bgSource === "customImage" && customBgImage) {
+    bgUrl = customBgImage;
+  } else {
+    bgUrl = serverUrl;
   }
+  const interval = setInterval(() => {
+    const now = new Date();
+    const newSeed = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${now.getHours()}`;
+    if (newSeed !== currentSeed) {
+      currentSeed = newSeed;
+    }
+  }, 1000 * 60);
 
+  return () => clearInterval(interval);
+});
 </script>
 
-<main 
-  class:darken={settings.bgImageDarken} 
-  style:--bg-url={bgStyle}
-  style:--blur-amount="{settings.bgImageBlur}px"
->
-  <div class="content">
-    {@render children?.()}
-  </div>
+<div class="background" style="--blur-amount: {settings.bgImageBlur}px" >
+  <img 
+    src={bgUrl} 
+    alt="Background"
+    aria-hidden="true"
+  />
+  <div class:overlay={settings.bgImageDarken}></div>
+</div>
+
+<main class:scroll={settings.showNews}>
+  {@render children?.()}
 </main>
 
 <style>
-  main {
-    position: relative;
-    min-height: 100vh;
-    background-color: var(--md-sys-color-surface-container-high);
-    overflow: hidden; 
-    isolation: isolate;
-  }
+.background {
+  position: fixed;
+  inset: 0;           
+  z-index: -1;        
+  overflow: hidden;
+  background-color: var(--md-sys-color-background); 
+}
 
-  main::before {
-    content: '';
-    position: absolute;
-    inset: -20px; 
-    background-image: var(--bg-url);
-    background-size: cover;
-    background-position: center;
-    filter: blur(var(--blur-amount));
-    z-index: -2;
-    transition: background-image 0.5s ease;
-  }
+.background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.5s ease-in-out;
+  filter: blur(var(--blur-amount));
+  transform: scale(1.05);
+}
 
-  main.darken::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4); 
-    z-index: -1;
-    pointer-events: none;
-  }
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4); 
+}
 
-  .content {
-    position: relative;
-    z-index: 1;
-    overflow-y: auto;
-  }
+main {
+  position: relative;
+  height: 100dvh;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+}
+main.scroll {
+  overflow-y: auto;
+}
 </style>

@@ -11,23 +11,24 @@ $effect(() => {
     localStorage.setItem('settings', JSON.stringify(settings));
   }
 });
-let fileName = $state('No File Chosen');
-let initialImage = (browser && localStorage.getItem("image")) || null;
-let customBgImage = $state(initialImage);
+let  customBgImage = $state(browser && localStorage.getItem("image") || null);
 
 function handleImageUpload(event) {
-  const files = event.target.files[0];
-  if(!files) return;
-  fileName = files.name;
+ const file = event.target.files[0];
+  if(!file) return;
   const read = new FileReader();
   read.onload = (e) => {
-    customBgImage = e.target.result;
+   customBgImage = e.target.result;
+  if(browser) localStorage.setItem("image", customBgImage);
   };
-  read.readAsDataURL(files);
+  read.readAsDataURL(file);
 }
+
 function clearCustomImage() {
   customBgImage = null;
+  if(browser) localStorage.removeItem("image");
 }
+
 function handleKeyDown(event) {
   if(event.key === 'Enter') {
     getWeather(settings.city);
@@ -49,55 +50,52 @@ function handleKeyDown(event) {
     <div class="settings-container">
       <div class="settings-card">
         Background   
-        <select class="select-data" name="bg-soruce" bind:value={settings.bgSource} id="bg-source">
-          <option value="bgImage">Image</option>
-          <option value="customImage">Upload my image</option>
-          <option value="default">Default</option>
+       <select class="select-data" name="bg-soruce" bind:value={settings.bgSource} id="bg-source">
+        <option value="bgImage">Image</option>
+        <option value="customImage">Custom Image</option>
+        <option value="default">Default</option>
         </select>
 
       </div>
-      {#if settings.bgSource === 'customBgImage'}
+      {#if settings.bgSource === 'customImage'}
         <div class="settings-card-2">
-          <div class="wrap new">Darken Image <Switch bind:checked={settings.bgImageDarken} /></div>
+       <div class="wrap new">Darken Image <Switch bind:checked={settings.bgImageDarken} /></div>
           <div class="wrap">
-            <input class="image-input" type="file" id="bg-upload" accept="image/png, image/jpeg, image/webp, image/gif" onchange={handleImageUpload}>
-            <label for="bg-upload" class="file-label">{fileName}</label>
+            <label class="btn">Upload Image
+            <input class="image-input" type="file" accept="image/*" onchange={handleImageUpload} hidden>
+              </label>
             {#if customBgImage}
-              <button class="clear" onclick={clearCustomImage}>Clear Image</button>
+              <button class="clear" onclick={clearCustomImage}>Remove</button>
             {/if}
           </div>
         </div>
       {/if}
-      {#if settings.bgSource === 'customBgImage' || settings.bgSource === 'bgImage'}
+      {#if settings.bgSource !== "default"}
         <div class="setting-slider">
-          <label for="blur-slider">Background Blur</label>
-          <div class="slider-controls">
+          <span>Blur ({settings.bgImageBlur}px)</span>
             <input
               type="range"
-              id="blur-slider"
               min="0"
-              max="8"
-              step="1"
+              max="10"
               bind:value={settings.bgImageBlur}
             />
-            <span>{settings.bgImageBlur}px</span>
           </div>
-        </div>
       {/if}
 
-      <div class="settings-card">
+      <section>
+      <div class="settings-card" >
         Clock   <Switch bind:checked={settings.showClock} />
       </div>
       {#if settings.showClock}
-        <div class="settings-card">
-          12hr Clock   <Switch bind:checked={settings.twelvehrClock} />
-        </div>
+      <div class="settings-card" style="margin: 0.5rem 1rem; padding: 0.7rem; opacity: 0.9;">
+        12hr Clock   <Switch bind:checked={settings.twelvehrClock} />
+      </div>
       {/if}
       <div class="settings-card">
         Greeting  <Switch bind:checked={settings.greeting} />
       </div>
       {#if settings.greeting} 
-        <input class="name-input" max="30" type="text" bind:value={settings.name} placeholder="Enter name...">
+         <input class="name-input" max="30" type="text" bind:value={settings.name} placeholder="Enter name...">
       {/if}
 
       <div class="settings-card">
@@ -106,8 +104,8 @@ function handleKeyDown(event) {
 
       {#if settings.showWeather} 
         <div class="location-input">
-          <label for="location">Location</label> <input bind:value={settings.city} type="text" placeholder="Enter Location" id="location" onkeydown={() => {handleKeyDown(event)}}>
-        </div>
+      <label for="location">Location</label> <input bind:value={settings.city} type="text" placeholder="Enter Location" id="location" onkeydown={() => {handleKeyDown(event)}}>
+    </div>
       {/if}
       <div class="settings-card">
         News <Switch bind:checked={settings.showNews} />
@@ -115,6 +113,7 @@ function handleKeyDown(event) {
       <div class="settings-card">
         Quick Links <Switch bind:checked={settings.quickLinks} />
       </div>
+        </section>
 
     </div>
     <footer>
@@ -157,6 +156,19 @@ function handleKeyDown(event) {
   margin: 0.2rem;
   display: flex;
   align-items: center;
+  transition: all 0.2s ease;
+}
+.close-btn:active {
+  border-radius: 14px;
+  transform: scale(0.98);
+}
+.btn {
+  padding: 0.4rem 0.5rem;
+  margin: 0.5rem;
+  color: var(--md-sys-color-secondary);
+  border-radius: 16px;
+  border: 2px solid var(--md-sys-color-outline-variant);
+
 }
 
 .settings-container {
@@ -182,8 +194,13 @@ function handleKeyDown(event) {
   transition: 0.3s all ease;
 }
 .settings-card:hover {
-  font-weight: 500;
+ font-weight: 500;
   opacity: 0.95;
+}
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 .select-data {
   width: 30%;
@@ -196,11 +213,12 @@ function handleKeyDown(event) {
   font-weight: 600;
 }
 .settings-card-2 {
-  display: flex;
+    display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.2rem;
-}
+    gap: 0.7rem;
+  background-color: var(--md-sys-color-surface-container);
+  margin: 0 1rem;
+  }
 .image-input {
   position:absolute;
   opacity: 0;
@@ -213,31 +231,26 @@ function handleKeyDown(event) {
   position: relative;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   background-color: var(--md-sys-color-surface-container-high);
   border-radius: 16px;
-  width: 100%;
 }
 .new {
-  padding: 1rem;
-}
-.file-label {
-  display: flex;
-  width:fit-content;
-  background-color: var(--md-sys-color-secondary);
-  color: var(--md-sys-color-on-secondary);
-  align-items: center;
-  border-radius: 13px;
-  opacity: 0.7;
-  padding: 5px 15px; 
-  margin: 0.6rem;
+  padding: 0.9rem;
 }
 .clear {
   padding: 5px 15px; 
   margin: 0.6rem;
   background-color: var(--md-sys-color-primary-container);
   color: var(--md-sys-color-on-primary-container);
-  border-radius: 13px; 
+  border-radius: 17px; 
   font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.clear:active {
+  border-radius: 13px;
+  opacity: 0.8;
+  transform: scale(0.98);
 }
 .name-input {
   background-color: var(--md-sys-color-surface-container-low);
@@ -251,7 +264,7 @@ function handleKeyDown(event) {
   border: 2px solid var(--md-sys-color-primary);
 }
 .location-input {
-  display: flex;
+ display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: var(--md-sys-color-surface-container-high);
@@ -273,49 +286,89 @@ function handleKeyDown(event) {
 }
 .setting-slider {
   display: flex;
-  flex-direction: column;
-  margin: 1rem;
-}
-.slider-controls {
-  display: flex;
+  justify-content: space-between;
+  margin: 0.5rem 1rem;
+  border-radius: 16px;
+  border: 2px solid var(--md-sys-color-outline-variant);
+  background-color: var(--md-sys-color-surface-container-high);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.95rem;
   align-items: center;
-  justify-content: space-around;
-  font-weight: 600;
-  color: var(--md-sys-color-primary);
-  margin: 1rem;
+
 }
 input[type="range"] {
   appearance: none;
   cursor: pointer;
-  width: 80%;
   height: 4px;
-  background: var(--md-sys-color-secondary-container);
+  background: transparent;
   margin: 0;
+  transition: opacity 0.2s ease;
 }
-input[type="range"]::-webkit-slider-runnable-track,
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: var(--md-sys-color-secondary-container);
+  height: 4px;
+  border-radius: 36px;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
 input[type="range"]::-moz-range-track {
   background: var(--md-sys-color-secondary-container);
   height: 4px;
   border-radius: 36px;
   border: none;
+  transition: background-color 0.3s ease;
 }
+
 input[type="range"]::-webkit-slider-thumb {
   appearance: none;
-  height: 25px;
-  width: 7px;
-  border-radius: 12px;
+  height: 20px;
+  width: 6px; 
+  border-radius: 18px;
   background: var(--md-sys-color-on-secondary-container);
   border: none;
+  margin-top: -8px; 
+  box-shadow: 0 0 0 0px rgba(var(--md-sys-color-on-secondary-container), 0);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              background-color 0.2s ease,
+              box-shadow 0.2s ease;
 }
+
 input[type="range"]::-moz-range-thumb {
-  height: 25px;     
-  width: 7px; 
-  border-radius: 12px;
+  height: 20px;
+  width: 6px;
+  border-radius: 18px;
   background: var(--md-sys-color-on-secondary-container);
   border: none;
+  box-shadow: 0 0 0 0px rgba(var(--md-sys-color-on-secondary-container), 0);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              background-color 0.2s ease, 
+              box-shadow 0.2s ease;
 }
+
+input[type="range"]:hover::-webkit-slider-thumb {
+  transform: scale(1.2);
+  background: var(--md-sys-color-primary);
+}
+input[type="range"]:hover::-moz-range-thumb {
+  transform: scale(1.2);
+  background: var(--md-sys-color-primary);
+}
+
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.4);
+  box-shadow: 0 0 10px 0px rgba(0, 0, 0, 0.2);
+  cursor: grabbing;
+}
+input[type="range"]:active::-moz-range-thumb {
+  transform: scale(1.4);
+  box-shadow: 0 0 10px 0px rgba(0, 0, 0, 0.2);
+  cursor: grabbing;
+}
+
 footer {
-  font-size: 0.82rem;
+  font-size: 0.81rem;
   width: 100%;
   text-align: center;
   color:  var(--md-sys-color-on-surface-variant);

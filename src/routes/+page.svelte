@@ -298,8 +298,8 @@ $effect(() => {
   -ms-user-select: none;
   text-shadow: 1px 2px 4px var(--md-sys-color-shadow);
   align-items: center;
-  opacity: 0.9;
-  backdrop-filter: blur(4px);
+  opacity: 0.8;
+  backdrop-filter: blur(6px);
   justify-content: center;
 }
 .ampm {
@@ -318,6 +318,7 @@ $effect(() => {
   justify-content: space-between;
   margin: 1.8rem;
   background-color: rgba(20, 20, 21, 0.8);
+  backdrop-filter: blur(6px); 
   border-radius: 32px;
   color: var(--md-sys-color-on-primary-container);
   gap: 8px;
@@ -373,8 +374,8 @@ $effect(() => {
 
 .engine-icon,
 .engine-i {
-  width: 28px;
-  height: 28px;
+  width: 27px;
+  height: 27px;
   margin-right: 8px;
   border-radius: 2px;
 }
@@ -384,9 +385,10 @@ $effect(() => {
 }
 
 .options-dropdown {
-  background-color: rgb(from var(--md-sys-color-primary-container) r g b / 0.6);
+  background-color: rgb(from var(--md-sys-color-surface-container-high) r g b / 0.8);
+  color: var(--md-sys-color-on-surface);
   backdrop-filter: blur(7px);
-  border-radius: 13px;
+  border-radius: 14px;
   position: absolute;
   left: 0;
   box-shadow: 0 3px 20px rgba(0, 0, 0, 0.4);
