@@ -4,8 +4,10 @@ import Switch from "$lib/components/switch.svelte";
 import { browser } from "$app/environment";
 import { fade } from "svelte/transition";
 import { getWeather } from "$lib/weather.svelte";
+import { getContext } from "svelte";
 
 let {show = false} = $props();
+const {bgChange} = getContext("layoutActions");
 $effect(() => {
   if (browser) {
     localStorage.setItem('settings', JSON.stringify(settings));
@@ -20,6 +22,7 @@ function handleImageUpload(event) {
   read.onload = (e) => {
    customBgImage = e.target.result;
   if(browser) localStorage.setItem("image", customBgImage);
+  bgChange();
   };
   read.readAsDataURL(file);
 }
@@ -50,7 +53,7 @@ function handleKeyDown(event) {
     <div class="settings-container">
       <div class="settings-card">
         Background   
-       <select class="select-data" name="bg-soruce" bind:value={settings.bgSource} id="bg-source">
+       <select class="select-data" name="bg-soruce" bind:value={settings.bgSource} onchange={bgChange} id="bg-source">
         <option value="bgImage">Image</option>
         <option value="customImage">Custom Image</option>
         <option value="default">Default</option>
@@ -65,7 +68,7 @@ function handleKeyDown(event) {
             <input class="image-input" type="file" accept="image/*" onchange={handleImageUpload} hidden>
               </label>
             {#if customBgImage}
-              <button class="clear" onclick={clearCustomImage}>Remove</button>
+              <button class="clear" onclick={() => {clearCustomImage(); bgChange()}}>Remove</button>
             {/if}
           </div>
         </div>
@@ -264,19 +267,20 @@ section {
   border: 2px solid var(--md-sys-color-primary);
 }
 .location-input {
- display: flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: var(--md-sys-color-surface-container-high);
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.6rem;
   border-radius: 16px;
   margin: 1rem;
 }
 .location-input label {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
+  margin-left: 0.4rem;
 }
 .location-input input {
-  padding: 10px;
+  padding: 7px;
   border-radius: 32px;
   max-width: 40%;
   text-align: center;

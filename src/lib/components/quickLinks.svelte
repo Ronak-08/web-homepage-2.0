@@ -51,7 +51,7 @@ function addNewLink() {
     {#if showAddForm}
       <div onclick={() => {showAddForm = !showAddForm}} class="overlay"></div>
       <div class="add-form" transition:fly="{{ y: -30, duration: 200 }}">
-        <h2>New Link</h2>
+        <h2 style="margin-bottom: 0.6rem;">New Link</h2>
         <input
           bind:value={newName}
           required
@@ -181,11 +181,12 @@ function addNewLink() {
 }
 
 .input {
-  padding: 0.7rem;
+  padding: 0.6rem;
   border-radius: 10px;
   color: inherit;
   background-color:var(--md-sys-color-surface-container-high);
   transition: all 0.2s ease;
+  border: 2px solid transparent;
 }
 .input:focus {
   border: 2px solid var(--md-sys-color-primary);
@@ -228,6 +229,7 @@ function addNewLink() {
   left: 0;
   height: 100vh;
   z-index: 8;
+  backdrop-filter: blur(5px);
 }
 h2 {
   font-weight: 500;

@@ -106,8 +106,8 @@ h2 {
 .loading {
   text-align: center;
   color: var(--md-sys-color-on-surface-variant);
-  opacity: 80;
-  animation: pulse 0.5s infinite;
+  opacity: 0.7;
+  animation: pulse 2s infinite;
   margin: 1rem;
 }
 @keyframes pulse {

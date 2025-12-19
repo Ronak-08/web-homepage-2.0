@@ -2,41 +2,54 @@
 import { browser } from '$app/environment';
 import { settings } from '$lib/settings.svelte';
 import '../app.css';
+import { onMount, setContext } from 'svelte';
 
 let { children, data } = $props();
 
 let serverUrl = `https://picsum.photos/seed/${data.seed}/1920/1080.webp`;
-let customBgImage = (browser && localStorage.getItem("image") || "");
+let showImage = $state(true);
 
 let bgUrl = $state(serverUrl);
 
-$effect(() => {
+const bgChange = () => {
   if (!browser) return;
 
-   if(settings.bgSource === "customImage" && customBgImage) {
-    bgUrl = customBgImage;
-  } else {
+   if(settings.bgSource === "customImage") {
+    const stored = localStorage.getItem("image");
+    if (stored) { bgUrl = stored; showImage = true; }
+    else { bgUrl = serverUrl; showImage = true; }
+
+  } else if(settings.bgSource === "bgImage")  {
     bgUrl = serverUrl;
+    showImage = true;
+  } else {
+    showImage = false;
   }
+}
+setContext('layoutActions', {bgChange});
+onMount(bgChange);
+
+$effect(() => { 
   const interval = setInterval(() => {
     const now = new Date();
     const newSeed = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${now.getHours()}`;
-    if (newSeed !== currentSeed) {
-      currentSeed = newSeed;
-    }
+    serverUrl = `https://picsum.photos/seed/${newSeed}/1920/1080.webp`;
+    if(settings.bgSource === "bgImage") bgUrl = serverUrl;
   }, 1000 * 60);
-
   return () => clearInterval(interval);
-});
+})
+
 </script>
 
 <div class="background" style="--blur-amount: {settings.bgImageBlur}px" >
+  {#if showImage}
   <img 
     src={bgUrl} 
     alt="Background"
     aria-hidden="true"
   />
   <div class:overlay={settings.bgImageDarken}></div>
+{/if}
 </div>
 
 <main class:scroll={settings.showNews}>

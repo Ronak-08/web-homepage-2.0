@@ -445,9 +445,10 @@ $effect(() => {
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
+  transition: all 0.2s ease;
 }
 .weather-container .temp {
-  font-size: 1.3rem;
+  font-size: 1.24rem;
   font-weight: 600;
   color: var(--md-sys-color-primary);
   text-align: center;
@@ -455,6 +456,7 @@ $effect(() => {
 
 .weather-container .desc {
   font-size: 0.8rem;
+  opacity: 0.8; 
   text-align: center;
   padding-bottom: 0.3rem;
 }

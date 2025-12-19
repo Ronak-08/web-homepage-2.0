@@ -1,68 +1,94 @@
+// Disables access to DOM typings like `HTMLElement` which are not available
+// inside a service worker and instantiates the correct globals
+/// <reference no-default-lib="true"/>
+/// <reference lib="esnext" />
+/// <reference lib="webworker" />
+
+// Ensures that the `$service-worker` import has proper type definitions
+/// <reference types="@sveltejs/kit" />
+
+// Only necessary if you have an import from `$env/static/public`
+/// <reference types="../.svelte-kit/ambient.d.ts" />
+
 import { build, files, version } from '$service-worker';
 
-const self = globalThis.self;
+// This gives `self` the correct types
+const self = /** @type {ServiceWorkerGlobalScope} */ (/** @type {unknown} */ (globalThis.self));
 
-const CORE_CACHE = `core-cache-${version}`;
-const IMAGE_CACHE = `image-cache-v1`;
+// Create a unique cache name for this deployment
+const CACHE = `cache-${version}`;
 
-const ASSETS = [...build, ...files];
+const ASSETS = [
+	...build, // the app itself
+	...files  // everything in `static`
+];
 
 self.addEventListener('install', (event) => {
-	event.waitUntil(
-		caches.open(CORE_CACHE)
-			.then((cache) => cache.addAll(ASSETS))
-			.then(() => self.skipWaiting())
-	);
+	// Create a new cache and add all files to it
+	async function addFilesToCache() {
+		const cache = await caches.open(CACHE);
+		await cache.addAll(ASSETS);
+	}
+
+	event.waitUntil(addFilesToCache());
 });
 
 self.addEventListener('activate', (event) => {
-	event.waitUntil(
-		caches.keys().then((keys) => {
-			return Promise.all(
-				keys
-					.filter((key) => key !== CORE_CACHE && key !== IMAGE_CACHE)
-					.map((key) => caches.delete(key))
-			);
-		})
-	);
+	// Remove previous cached data from disk
+	async function deleteOldCaches() {
+		for (const key of await caches.keys()) {
+			if (key !== CACHE) await caches.delete(key);
+		}
+	}
+
+	event.waitUntil(deleteOldCaches());
 });
 
 self.addEventListener('fetch', (event) => {
-	if (event.request.method !== 'GET' || event.request.headers.get('range')) return;
+	// ignore POST requests etc
+	if (event.request.method !== 'GET') return;
 
-	const url = new URL(event.request.url);
+	async function respond() {
+		const url = new URL(event.request.url);
+		const cache = await caches.open(CACHE);
 
-	if (ASSETS.includes(url.pathname)) {
-		event.respondWith(
-			caches.open(CORE_CACHE).then((cache) => cache.match(event.request))
-		);
-		return;
+		// `build`/`files` can always be served from the cache
+		if (ASSETS.includes(url.pathname)) {
+			const response = await cache.match(url.pathname);
+
+			if (response) {
+				return response;
+			}
+		}
+
+		// for everything else, try the network first, but
+		// fall back to the cache if we're offline
+		try {
+			const response = await fetch(event.request);
+
+			// if we're offline, fetch can return a value that is not a Response
+			// instead of throwing - and we can't pass this non-Response to respondWith
+			if (!(response instanceof Response)) {
+				throw new Error('invalid response from fetch');
+			}
+
+			if (response.status === 200) {
+				cache.put(event.request, response.clone());
+			}
+
+			return response;
+		} catch (err) {
+			const response = await cache.match(event.request);
+
+			if (response) {
+				return response;
+			}
+
+			// if there's no cache, then just error out
+			// as there is nothing we can do to respond to this request
+			throw err;
+		}
 	}
 
-	if (
-		event.request.destination === 'image' ||
-		url.hostname === 'picsum.photos' ||
-		url.hostname === 'w.wallhaven.cc'
-	) {
-		event.respondWith(
-			caches.open(IMAGE_CACHE).then(async (cache) => {
-				const cachedResponse = await cache.match(event.request);
-				const fetchedResponse = fetch(event.request).then((networkResponse) => {
-					if (networkResponse.ok) {
-						cache.put(event.request, networkResponse.clone());
-					}
-					return networkResponse;
-				});
-				return cachedResponse || fetchedResponse;
-			})
-		);
-		return;
-	}
-
-	event.respondWith(
-		fetch(event.request).catch(async () => {
-			const cache = await caches.open(CORE_CACHE);
-			return await cache.match(event.request);
-		})
-	);
+	event.respondWith(respond());
 });
