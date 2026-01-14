@@ -2,6 +2,8 @@
 import { quickLinks,addLink, removeLink } from "$lib/link.svelte.js";
 import { fade, fly } from "svelte/transition";
 import { browser } from '$app/environment';
+import Add from '~icons/material-symbols/add';
+import Ripple from "./Ripple.svelte";
 
 let showAddForm = $state(false);
 let { open = false } = $props(); 
@@ -51,7 +53,7 @@ function addNewLink() {
     {#if showAddForm}
       <div onclick={() => {showAddForm = !showAddForm}} class="overlay"></div>
       <div class="add-form" transition:fly="{{ y: -30, duration: 200 }}">
-        <h2 style="margin-bottom: 0.6rem;">New Link</h2>
+        <h2 style="margin-bottom: 0.7rem; font-weight: 600;">New Link</h2>
         <input
           bind:value={newName}
           required
@@ -65,8 +67,12 @@ function addNewLink() {
           class="input"
         />
         <div class="form-actions">
-          <button onclick={() => showAddForm = false} class="btn btn-secondary">Cancel</button>
-          <button onclick={addNewLink} class="btn btn-primary">Add</button>
+          <button onclick={() => showAddForm = false} class="btn btn-secondary">
+          <Ripple />
+            Cancel</button>
+          <button onclick={addNewLink} class="btn btn-primary">
+            <Ripple />
+            Add</button>
         </div>
       </div>
     {/if}
@@ -75,7 +81,7 @@ function addNewLink() {
         class="add-btn"
         transition:fade={{duration: 200}}
       >
-        <span class="material-symbols-outlined">add</span>
+      <Add />
       </button>
   </div>
 </div>
@@ -110,18 +116,18 @@ function addNewLink() {
 }
 .link-item img {
   border-radius: 32px;
-  width: 33px;
-  height: 33px;
+  width: 32px;
+  height: 32px;
   background-color: var(--md-sys-color-surface-container-highest);
   border: 1px solid var(--md-sys-color-outline-variant);
 }
 .link-name {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   max-width: 65px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding-top: 0.3rem;
+  padding-top: 0.35rem;
   text-shadow: -1px 1px 4px black;
   text-align: center;
 }
@@ -158,9 +164,10 @@ function addNewLink() {
   width: 40px;
   height: 40px;
   transition: 0.2s all ease;
+  position: relative;
 }
 .add-btn:active {
-  transform: scale(0.94);
+  transform: scale(0.95);
   border-radius: 13px;
 }
 
@@ -174,15 +181,15 @@ function addNewLink() {
   transform: translate(-50%,-50%);
   gap: 0.5rem;
   padding: 1.5rem;
-  border-radius: 13px;
+  border-radius: 28px;
   z-index: 9;
-  box-shadow: -1px 1px 10px rgba(0,0,0,0.5);
+  box-shadow: -1px 1px 10px rgba(0,0,0,0.3);
   background-color:var(--md-sys-color-surface-container);
 }
 
 .input {
   padding: 0.6rem;
-  border-radius: 10px;
+  border-radius: 16px;
   color: inherit;
   background-color:var(--md-sys-color-surface-container-high);
   transition: all 0.2s ease;

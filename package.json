@@ -10,6 +10,7 @@
 		"prepare": "svelte-kit sync || echo ''"
 	},
 	"devDependencies": {
+		"@iconify-json/material-symbols": "^1.2.51",
 		"@sveltejs/adapter-auto": "^6.0.0",
 		"@sveltejs/kit": "^2.22.0",
 		"@sveltejs/vite-plugin-svelte": "^6.0.0",
@@ -17,6 +18,7 @@
 		"vite": "^7.0.4"
 	},
 	"dependencies": {
-		"rss-parser": "^3.13.0"
+		"rss-parser": "^3.13.0",
+		"unplugin-icons": "^22.5.0"
 	}
 }

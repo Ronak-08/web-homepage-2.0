@@ -8,12 +8,14 @@ import News from "$lib/components/news.svelte";
 import { getWeather } from "$lib/weather.svelte.js";
 import { onMount } from "svelte";
 
+import Search from '~icons/material-symbols/search';
+import Setting from '~icons/material-symbols/settings';
 
 let query = $state("");
 let suggestions = $state([]);
 let showSuggestions = $state(false);
 let open = $state(false);
-let element;
+let element = $state();
 let timeoutId;
 const debounceDelay = 200;
 let weatherData = $state(null);
@@ -67,19 +69,6 @@ async function getSuggestions() {
   }, debounceDelay);
 }
 
-function getTime() {
-  let date = new Date();
-  if (settings.twelvehrClock) {
-    let hours = date.getHours() % 12 || 12;
-    let minutes = String(date.getMinutes()).padStart(2, "0");
-    let ampm = date.getHours() >= 12 ? "PM" : "AM";
-    return { hours: `${hours}:${minutes}`, ampm };
-  } else {
-    let hours = date.getHours();
-    let minutes = String(date.getMinutes()).padStart(2, "0");
-    return { hours: `${hours}:${minutes}` };
-  }
-}
 
 function greet() {
   const date = new Date();
@@ -147,35 +136,49 @@ function closeSuggestions() {
   showSuggestions = false;
 }
 
-let time = $state(getTime());
+let now = $state(new Date());
 
-$effect(() => {
-  const interval = setInterval(() => {
-    time = getTime();
-  }, 60000);
-  return () => clearInterval(interval);
-});
+let timeParts = $derived.by(() => {
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: settings.twelveHrClock
+  });
+  const parts = formatter.formatToParts(now);
+  const h = parts.find(p => p.type === 'hour')?.value
+  const m = parts.find(p => p.type === 'minute')?.value
+  const ampm = parts.find(p => p.type === 'dayPeriod')?.value
 
-$effect(() => {
-  if (settings.twelvehrClock) {
-    time = getTime();
+  return {
+    time: `${h}:${m}`,
+    ampm: ampm || ''
   }
 });
 
+onMount(() => {
+  const interval = setInterval(() => {
+    now = new Date();
+  }, 60000);
+  return () => clearInterval(interval);
+})
+
+
 </script>
 
-<Settings {show} />
+<Settings bind:show />
 
 <button
   class="settings-btn"
   onclick={() => {
     show = !show;
-  }}><span class="material-symbols-outlined"> settings </span></button
+  }}><Setting /></button
 >
 {#if settings.showClock}
   <div class="time-display">
-    <p class="date">{time.hours}</p>
-    <span class="ampm">{time.ampm}</span>
+    <p class="date">{timeParts.time}</p>
+    {#if settings.twelveHrClock}
+    <span class="ampm">{timeParts.ampm}</span>
+    {/if}
   </div>
 {/if}
 
@@ -186,6 +189,7 @@ $effect(() => {
   </div>
 {/if}
 
+{#if settings.srcBar}
 <form bind:this={element} onsubmit={handleSearch} class="search-form">
   <div class="searchBar">
     <div class="custom-select-wrapper">
@@ -199,7 +203,6 @@ $effect(() => {
         {:else}
           <img src="/google.svg" alt="google" class="engine-icon" />
         {/if}
-        <span class="arrow material-symbols-outlined"> arrow_drop_down </span>
       </div>
 
       {#if showDropdown}
@@ -243,7 +246,7 @@ $effect(() => {
       bind:value={query}
     />
     <button type="submit" class="search-btn"
-    ><span class="material-symbols-outlined"> search </span></button
+    ><Search /></button
     >
     {#if suggestions.length > 0 && query.trim().length >= 1 && showSuggestions}
       <div class="overlay" onclick={closeSuggestions}></div>
@@ -262,6 +265,7 @@ $effect(() => {
     {/if}
   </div>
 </form>
+{/if}
 
 {#if settings.quickLinks}
   <QuickLinks {open} />
@@ -285,10 +289,10 @@ $effect(() => {
 .date {
   font-size: clamp(6rem, 15vw, 9rem);
   text-align: center;
-  font-weight: 700;
+  font-weight: 800;
   margin-top: 1.6rem;
   text-shadow: 1px 2px 4px var(--md-sys-color-shadow);
-  opacity: 0.9;
+  opacity: 0.94;
 }
 .time-display {
   display: flex;
@@ -299,11 +303,10 @@ $effect(() => {
   text-shadow: 1px 2px 4px var(--md-sys-color-shadow);
   align-items: center;
   opacity: 0.8;
-  backdrop-filter: blur(6px);
   justify-content: center;
 }
 .ampm {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   margin-left: 0.4rem;
   opacity: 0.7;
 }
@@ -314,36 +317,40 @@ $effect(() => {
 }
 .searchBar {
   display: flex;
+  padding: 0.5rem;
   align-items: center;
-  justify-content: space-between;
-  margin: 1.8rem;
-  background-color: rgba(20, 20, 21, 0.8);
-  backdrop-filter: blur(6px); 
+  justify-content: left;
+  margin: 1.5rem;
+  background-color: rgba(20, 20, 21, 0.7);
   border-radius: 32px;
   color: var(--md-sys-color-on-primary-container);
-  gap: 8px;
+  gap: 5px;
 }
 .search {
-  padding: 1rem;
   font-size: 1.125rem;
   background-color: transparent;
   z-index: 1;
   border-radius: 32px;
-  width: 100%;
+  flex: 1;
+  width: 90%;
+  /* border: 1px solid red; */
   color: inherit;
+  padding: 0.5rem;
 }
 .search-btn {
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 0.6rem;
-  margin-right: 0.5rem;
   z-index: 2;
   border-radius: 50%;
   color: var(--md-sys-color-on-primary);
   transition: 0.3s all ease;
   background-color: var(--md-sys-color-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  padding: 0.4rem;
 }
+
 .search-btn:hover,
 .settings-btn:hover {
   transform: scale(1.03);
@@ -360,16 +367,16 @@ $effect(() => {
 .selected-display {
   display: flex;
   align-items: center;
-  margin: 0 0.6rem 0;
   padding: 0.4rem;
   background-color: var(--md-sys-color-surface-container-high);
-  border-radius: 32px;
+  border-radius: 30px;
   width: 100%;
   cursor: pointer;
   transition: 0.2s all ease;
+  border: 1px solid transparent;
 }
 .selected-display:hover {
-  border: 1.5px solid var(--md-sys-color-primary);
+  border: 1px solid var(--md-sys-color-primary);
 }
 
 .engine-icon,
@@ -397,9 +404,6 @@ $effect(() => {
   z-index: 8;
 }
 
-.arrow {
-  margin-right: 3px;
-}
 .option-item {
   display: flex;
   align-items: center;
@@ -467,7 +471,6 @@ $effect(() => {
   right: 0;
   z-index: 10;
   list-style-type: none;
-  padding: 0;
   padding: 1rem;
   margin: 7px auto;
   border-radius: 13px;
@@ -501,12 +504,12 @@ $effect(() => {
   margin: 0 auto 3rem;
   width: fit-content;
   font-weight: 500;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  text-shadow: 1px 1px 2px black;
+  gap: 0.5rem;
+  text-shadow: 1px 1px 3px black;
   user-select: none;
   -moz-user-select: none;
   padding: 0.5rem;
@@ -515,7 +518,7 @@ $effect(() => {
   background-color: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
   border-radius: 32px;
-  padding: 0 14px;
+  padding: 0 13px;
   font-weight: 600;
   width: fit-content;
   text-shadow: none;
@@ -526,11 +529,9 @@ $effect(() => {
     border-radius: 40px;
     margin: 2rem auto;
   }
-  .search {
-    padding: 1.3rem;
-  }
   .suggestions-list {
     max-width: 60vw;
+    padding: 1.1rem;
   }
   .greet-div {
     margin: 1rem auto;

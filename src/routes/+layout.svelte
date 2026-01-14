@@ -1,55 +1,71 @@
 <script>
-import { browser } from '$app/environment';
-import { settings } from '$lib/settings.svelte';
-import '../app.css';
-import { onMount, setContext } from 'svelte';
+  import { browser } from '$app/environment';
+  import { settings } from '$lib/settings.svelte';
+  import { onMount, setContext } from 'svelte';
+  import '../app.css';
 
-let { children, data } = $props();
+  let { children } = $props();
 
-let serverUrl = `https://picsum.photos/seed/${data.seed}/1920/1080.webp`;
-let showImage = $state(true);
+  let now = $state(new Date());
+  let imgLoaded = $state(false);
 
-let bgUrl = $state(serverUrl);
+  let customImage = $state(null);
 
-const bgChange = () => {
-  if (!browser) return;
+  let serverUrl = $derived.by(() => {
+    const seed = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${now.getHours()}`;
+    return `https://picsum.photos/seed/${seed}/1920/1080.webp`;
+  });
 
-   if(settings.bgSource === "customImage") {
+  let bgUrl = $derived.by(() => {
+    if (settings.bgSource === "bgImage") {
+      return serverUrl;
+    } 
+    if (settings.bgSource === "customImage") {
+      return customImage ?? serverUrl; 
+    }
+    return null; 
+  });
+
+  const refreshCustomImage = () => {
+    if (!browser) return;
     const stored = localStorage.getItem("image");
-    if (stored) { bgUrl = stored; showImage = true; }
-    else { bgUrl = serverUrl; showImage = true; }
+    if (stored !== customImage) {
+      customImage = stored;
+    }
+  };
 
-  } else if(settings.bgSource === "bgImage")  {
-    bgUrl = serverUrl;
-    showImage = true;
-  } else {
-    showImage = false;
-  }
-}
-setContext('layoutActions', {bgChange});
-onMount(bgChange);
+  setContext('layoutActions', { refreshCustomImage });
 
-$effect(() => { 
-  const interval = setInterval(() => {
-    const now = new Date();
-    const newSeed = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${now.getHours()}`;
-    serverUrl = `https://picsum.photos/seed/${newSeed}/1920/1080.webp`;
-    if(settings.bgSource === "bgImage") bgUrl = serverUrl;
-  }, 1000 * 60);
-  return () => clearInterval(interval);
-})
+  onMount(() => {
+    refreshCustomImage();
+    const interval = setInterval(() => {
+      now = new Date();
+    }, 60000);
 
+    return () => clearInterval(interval);
+  });
+
+  $effect(() => {
+    bgUrl; 
+    imgLoaded = false;
+  });
 </script>
 
+
 <div class="background" style="--blur-amount: {settings.bgImageBlur}px" >
-  {#if showImage}
-  <img 
-    src={bgUrl} 
-    alt="Background"
-    aria-hidden="true"
-  />
-  <div class:overlay={settings.bgImageDarken}></div>
-{/if}
+    <img 
+      src={bgUrl} 
+      alt="" 
+      aria-hidden="true"
+      fetchpriority="high" 
+      decoding="async" 
+      draggable="false"
+      class:visible={imgLoaded}
+      onload={() => imgLoaded = true}
+    />
+    {#if settings.bgImageDarken}
+      <div class="overlay" in:fade={{ duration: 500 }}></div>
+    {/if}
 </div>
 
 <main class:scroll={settings.showNews}>
@@ -69,11 +85,16 @@ $effect(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: opacity 0.5s ease-in-out;
+  will-change: transform, filter;
+  opacity: 0;
+  transition: opacity 0.7s cubic-bezier(0.2, 0.0, 0.2, 1);
+
   filter: blur(var(--blur-amount));
   transform: scale(1.05);
 }
-
+.background img.visible {
+    opacity: 1;
+  }
 .overlay {
   position: absolute;
   inset: 0;
@@ -88,5 +109,7 @@ main {
 }
 main.scroll {
   overflow-y: auto;
+  scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
 </style>

@@ -5,9 +5,11 @@ import { browser } from "$app/environment";
 import { fade } from "svelte/transition";
 import { getWeather } from "$lib/weather.svelte";
 import { getContext } from "svelte";
+import Close from '~icons/material-symbols/close';
+    import Ripple from "./Ripple.svelte";
 
-let {show = false} = $props();
-const {bgChange} = getContext("layoutActions");
+let {show = $bindable(false)} = $props();
+const {refreshCustomImage } = getContext("layoutActions");
 $effect(() => {
   if (browser) {
     localStorage.setItem('settings', JSON.stringify(settings));
@@ -22,7 +24,7 @@ function handleImageUpload(event) {
   read.onload = (e) => {
    customBgImage = e.target.result;
   if(browser) localStorage.setItem("image", customBgImage);
-  bgChange();
+  refreshCustomImage();
   };
   read.readAsDataURL(file);
 }
@@ -43,84 +45,89 @@ function handleKeyDown(event) {
 </script>
 
 {#if show}
-  <main transition:fade={{duration: 200}} class="container"> 
+  <main transition:fade={{ duration: 200 }} class="container">
     <div class="header">
-      <button class="close-btn" onclick={() => {show = false}}> <span class="material-symbols-outlined">
-        close
-      </span> </button>
-      <h1>Settings</h1>
+      <button class="close-btn" onclick={() => show = false}><Close /></button>
+      <h1 style="font-weight: 800; font-size: 2rem;">Settings</h1>
     </div>
+
     <div class="settings-container">
       <div class="settings-card">
-        Background   
-       <select class="select-data" name="bg-soruce" bind:value={settings.bgSource} onchange={bgChange} id="bg-source">
-        <option value="bgImage">Image</option>
-        <option value="customImage">Custom Image</option>
-        <option value="default">Default</option>
+        Background
+        <select class="select-data" id="bg-source" bind:value={settings.bgSource} onchange={refreshCustomImage}>
+          <option value="bgImage">Image</option>
+          <option value="customImage">Custom Image</option>
+          <option value="default">Default</option>
         </select>
-
       </div>
+
       {#if settings.bgSource === 'customImage'}
         <div class="settings-card-2">
-       <div class="wrap new">Darken Image <Switch bind:checked={settings.bgImageDarken} /></div>
+          <div class="wrap new">Darken Image <Switch bind:checked={settings.bgImageDarken} /></div>
           <div class="wrap">
-            <label class="btn">Upload Image
-            <input class="image-input" type="file" accept="image/*" onchange={handleImageUpload} hidden>
-              </label>
+            <label class="btn">
+              Upload Image
+              <input class="image-input" type="file" accept="image/*" onchange={handleImageUpload} hidden />
+            </label>
             {#if customBgImage}
-              <button class="clear" onclick={() => {clearCustomImage(); bgChange()}}>Remove</button>
+              <button class="clear" onclick={() => { clearCustomImage(); refreshCustomImage (); }}>Remove</button>
             {/if}
           </div>
         </div>
       {/if}
+
       {#if settings.bgSource !== "default"}
         <div class="setting-slider">
           <span>Blur ({settings.bgImageBlur}px)</span>
-            <input
-              type="range"
-              min="0"
-              max="10"
-              bind:value={settings.bgImageBlur}
-            />
-          </div>
+          <input type="range" min="0" max="10" bind:value={settings.bgImageBlur} />
+        </div>
       {/if}
 
       <section>
-      <div class="settings-card" >
-        Clock   <Switch bind:checked={settings.showClock} />
-      </div>
-      {#if settings.showClock}
-      <div class="settings-card" style="margin: 0.5rem 1rem; padding: 0.7rem; opacity: 0.9;">
-        12hr Clock   <Switch bind:checked={settings.twelvehrClock} />
-      </div>
-      {/if}
-      <div class="settings-card">
-        Greeting  <Switch bind:checked={settings.greeting} />
-      </div>
-      {#if settings.greeting} 
-         <input class="name-input" max="30" type="text" bind:value={settings.name} placeholder="Enter name...">
-      {/if}
+        <div class="settings-card">
+            <Ripple />
+          Clock <Switch bind:checked={settings.showClock} />
+        </div>
+        {#if settings.showClock}
+          <div class="settings-card" style="margin: 0.5rem 1rem; padding: 0.7rem; opacity: 0.9;">
+            12 Hour Clock <Switch bind:checked={settings.twelvehrClock} />
+          </div>
+        {/if}
 
-      <div class="settings-card">
-        Weather  <Switch bind:checked={settings.showWeather} />
-      </div>
+        <div class="settings-card">
+            <Ripple />
+          Greeting <Switch bind:checked={settings.greeting} />
+        </div>
+        {#if settings.greeting}
+          <input class="name-input" max="30" bind:value={settings.name} placeholder="Enter name..." />
+        {/if}
 
-      {#if settings.showWeather} 
-        <div class="location-input">
-      <label for="location">Location</label> <input bind:value={settings.city} type="text" placeholder="Enter Location" id="location" onkeydown={() => {handleKeyDown(event)}}>
+        <div class="settings-card">
+            <Ripple />
+          Weather <Switch bind:checked={settings.showWeather} />
+        </div>
+        {#if settings.showWeather}
+          <div class="location-input">
+            <label for="location">Location</label>
+            <input id="location" bind:value={settings.city} placeholder="Enter Location" onkeydown={handleKeyDown} />
+          </div>
+        {/if}
+
+        {#each [
+          { label: 'News', key: 'showNews' }, 
+          { label: 'Quick Links', key: 'quickLinks' },
+          { label: 'Search Bar', key: 'srcBar' }
+        ] as { label, key }}
+          <div class="settings-card">
+            <Ripple />
+            {label} <Switch bind:checked={settings[key]} />
+          </div>
+        {/each}
+      </section>
     </div>
-      {/if}
-      <div class="settings-card">
-        News <Switch bind:checked={settings.showNews} />
-      </div>
-      <div class="settings-card">
-        Quick Links <Switch bind:checked={settings.quickLinks} />
-      </div>
-        </section>
 
-    </div>
     <footer>
-      <p>Made by Ronak © 2025</p>
+      <p>Made by Ronak © 2026</p>
       <p>
         <a href="https://github.com/Ronak-08/web-homepage-2.0">GitHub</a> |
         Like this website? Try <a href="https://tasksmaster01.netlify.app">Tasksmaster</a>!
@@ -151,7 +158,7 @@ function handleKeyDown(event) {
   gap: 16px;
 }
 .close-btn {
-  padding: 5px;
+  padding: 7px;
   box-shadow: 0px 2px 8px rgba(0,0,0,0.3);
   background-color: transparent;
   border: 1px solid var(--md-sys-color-outline-variant);
@@ -177,33 +184,30 @@ function handleKeyDown(event) {
 .settings-container {
   display: flex;
   flex-direction: column;
+  border-radius: 28px;
   margin: 2rem 1rem;
   max-height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0.4rem;
-  gap: 10px;
+  padding: 0.5rem;
+  gap: 3px;
   flex: 1;
 }
 .settings-card {
   display: flex;
-  background-color: var(--md-sys-color-surface-container-high);
+  position: relative;
+  background-color: var(--md-sys-color-surface-container);
   color: var(--md-sys-color-on-surface);
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  font-weight: 500;
   border-radius: 16px;
   transition: 0.3s all ease;
-}
-.settings-card:hover {
- font-weight: 500;
-  opacity: 0.95;
 }
 section {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.2rem;
 }
 .select-data {
   width: 30%;
@@ -220,7 +224,7 @@ section {
   flex-direction: column;
     gap: 0.7rem;
   background-color: var(--md-sys-color-surface-container);
-  margin: 0 1rem;
+  margin: 1rem;
   }
 .image-input {
   position:absolute;
@@ -257,14 +261,17 @@ section {
 }
 .name-input {
   background-color: var(--md-sys-color-surface-container-low);
+  width: fit-content;
   padding: 0.5rem 1rem;
-  border-radius: 16px;
-  margin: 1rem;
+  border-radius: 32px;
+  margin: 1rem auto;
   border: 1px solid var(--md-sys-color-outline);
+  opacity: 0.9;
   transition: 0.2s all ease;
 }
 .name-input:focus {
-  border: 2px solid var(--md-sys-color-primary);
+  border: 1px solid var(--md-sys-color-primary);
+  opacity: 1;
 }
 .location-input {
   display: flex;
@@ -291,12 +298,11 @@ section {
 .setting-slider {
   display: flex;
   justify-content: space-between;
-  margin: 0.5rem 1rem;
-  border-radius: 16px;
-  border: 2px solid var(--md-sys-color-outline-variant);
+  margin: 1rem;
+  border-radius: 26px;
   background-color: var(--md-sys-color-surface-container-high);
-  padding: 0.5rem 0.9rem;
-  font-size: 0.95rem;
+  padding: 1rem;
+  font-size: 0.90rem;
   align-items: center;
 
 }

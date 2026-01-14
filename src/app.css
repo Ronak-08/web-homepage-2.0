@@ -10,11 +10,11 @@ body {
   overflow: hidden;
   background: var(--md-sys-color-background);
   color: var(--md-sys-color-on-background);
-  font-family: "Outfit", sans-serif;
+  font-family: "Google Sans Flex", sans-serif;
   -webkit-tap-highlight-color: transparent;
   font-size: 1rem;
   line-height: 1.5;
-  height: 100%;
+  height: 100dvh;
   width: 100%;
 }
 
@@ -33,39 +33,99 @@ a {
   color: inherit;
 }
 
+/* google-sans-flex-regular - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Google Sans Flex';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/google-sans-flex-v16-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* google-sans-flex-500 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Google Sans Flex';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../fonts/google-sans-flex-v16-latin-500.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* google-sans-flex-600 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Google Sans Flex';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/google-sans-flex-v16-latin-600.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* google-sans-flex-700 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Google Sans Flex';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/google-sans-flex-v16-latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* google-sans-flex-800 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Google Sans Flex';
+  font-style: normal;
+  font-weight: 800;
+  src: url('../fonts/google-sans-flex-v16-latin-800.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
 ul, ol {
   list-style: none;
 }
 
 :root {
-  --md-sys-color-primary: rgb(219 185 249);
-  --md-sys-color-on-primary: rgb(63 36 88);
-  --md-sys-color-primary-container: rgb(86 58 112);
-  --md-sys-color-on-primary-container: rgb(240 219 255);
-  --md-sys-color-secondary: rgb(209 193 217);
-  --md-sys-color-on-secondary: rgb(55 44 63);
-  --md-sys-color-secondary-container: rgb(78 67 86);
-  --md-sys-color-on-secondary-container: rgb(237 221 246);
-  --md-sys-color-tertiary: rgb(243 183 189);
-  --md-sys-color-on-tertiary: rgb(75 37 42);
-  --md-sys-color-tertiary-container: rgb(101 58 64);
-  --md-sys-color-on-tertiary-container: rgb(255 217 220);
+  --md-sys-color-primary: rgb(129 211 223);
+  --md-sys-color-surface-tint: rgb(129 211 223);
+  --md-sys-color-on-primary: rgb(0 54 60);
+  --md-sys-color-primary-container: rgb(0 79 87);
+  --md-sys-color-on-primary-container: rgb(157 240 252);
+  --md-sys-color-secondary: rgb(177 203 207);
+  --md-sys-color-on-secondary: rgb(28 52 56);
+  --md-sys-color-secondary-container: rgb(50 75 78);
+  --md-sys-color-on-secondary-container: rgb(205 231 235);
+  --md-sys-color-tertiary: rgb(185 198 234);
+  --md-sys-color-on-tertiary: rgb(35 48 77);
+  --md-sys-color-tertiary-container: rgb(58 70 100);
+  --md-sys-color-on-tertiary-container: rgb(217 226 255);
   --md-sys-color-error: rgb(255 180 171);
   --md-sys-color-on-error: rgb(105 0 5);
   --md-sys-color-error-container: rgb(147 0 10);
   --md-sys-color-on-error-container: rgb(255 218 214);
-  --md-sys-color-background: rgb(21 18 23);
-  --md-sys-color-on-background: rgb(232 224 232);
-  --md-sys-color-surface: rgb(21 18 23);
-  --md-sys-color-on-surface: rgb(232 224 232);
-  --md-sys-color-surface-variant: rgb(74 69 78);
-  --md-sys-color-on-surface-variant: rgb(205 196 206);
-  --md-sys-color-outline: rgb(150 142 152);
-  --md-sys-color-outline-variant: rgb(74 69 78);
+  --md-sys-color-background: rgb(14 20 21);
+  --md-sys-color-on-background: rgb(222 228 228);
+  --md-sys-color-surface: rgb(14 20 21);
+  --md-sys-color-on-surface: rgb(222 228 228);
+  --md-sys-color-surface-variant: rgb(63 72 74);
+  --md-sys-color-on-surface-variant: rgb(190 200 202);
+  --md-sys-color-outline: rgb(137 146 148);
+  --md-sys-color-outline-variant: rgb(63 72 74);
   --md-sys-color-shadow: rgb(0 0 0);
-  --md-sys-color-surface-container-lowest: rgb(16 13 18);
-  --md-sys-color-surface-container-low: rgb(30 26 32);
-  --md-sys-color-surface-container: rgb(34 30 36);
-  --md-sys-color-surface-container-high: rgb(44 41 46);
-  --md-sys-color-surface-container-highest: rgb(55 51 57);
+  --md-sys-color-scrim: rgb(0 0 0);
+  --md-sys-color-inverse-surface: rgb(222 228 228);
+  --md-sys-color-inverse-on-surface: rgb(43 49 50);
+  --md-sys-color-inverse-primary: rgb(0 105 115);
+  --md-sys-color-primary-fixed: rgb(157 240 252);
+  --md-sys-color-on-primary-fixed: rgb(0 31 35);
+  --md-sys-color-primary-fixed-dim: rgb(129 211 223);
+  --md-sys-color-on-primary-fixed-variant: rgb(0 79 87);
+  --md-sys-color-secondary-fixed: rgb(205 231 235);
+  --md-sys-color-on-secondary-fixed: rgb(5 31 34);
+  --md-sys-color-secondary-fixed-dim: rgb(177 203 207);
+  --md-sys-color-on-secondary-fixed-variant: rgb(50 75 78);
+  --md-sys-color-tertiary-fixed: rgb(217 226 255);
+  --md-sys-color-on-tertiary-fixed: rgb(13 27 55);
+  --md-sys-color-tertiary-fixed-dim: rgb(185 198 234);
+  --md-sys-color-on-tertiary-fixed-variant: rgb(58 70 100);
+  --md-sys-color-surface-dim: rgb(14 20 21);
+  --md-sys-color-surface-bright: rgb(52 58 59);
+  --md-sys-color-surface-container-lowest: rgb(9 15 16);
+  --md-sys-color-surface-container-low: rgb(23 29 30);
+  --md-sys-color-surface-container: rgb(27 33 34);
+  --md-sys-color-surface-container-high: rgb(37 43 44);
+  --md-sys-color-surface-container-highest: rgb(48 54 55);
 }

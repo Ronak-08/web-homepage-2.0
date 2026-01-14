@@ -2,6 +2,7 @@ import { browser } from "$app/environment";
 const defaultSettings = {
   bgSource: 'bgImage',
   showClock: true,
+  srcBar: true,
   twelvehrClock: false,
   greeting: false,
   name: "User",
