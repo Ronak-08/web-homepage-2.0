@@ -12,11 +12,12 @@
   let customImage = $state(null);
 
   let serverUrl = $derived.by(() => {
-    const seed = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${now.getHours()}`;
+    const seed = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}-${now.getUTCHours()}`;
     return `https://picsum.photos/seed/${seed}/1920/1080.webp`;
   });
 
   let bgUrl = $derived.by(() => {
+    if(!settings) return null;
     if (settings.bgSource === "bgImage") {
       return serverUrl;
     } 
@@ -50,6 +51,17 @@
     imgLoaded = false;
   });
 </script>
+
+<svelte:head>
+  <link
+    rel="preload"
+    href="/fonts/google-sans-flex-v16-latin-regular.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
+  />
+</svelte:head>
+
 
 
 <div class="background" style="--blur-amount: {settings.bgImageBlur}px" >
