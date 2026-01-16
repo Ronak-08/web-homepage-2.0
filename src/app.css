@@ -39,7 +39,7 @@ a {
   font-family: 'Google Sans Flex';
   font-style: normal;
   font-weight: 400;
-  src: url('fonts/google-sans-flex-v16-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('/fonts/google-sans-flex-v16-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 /* google-sans-flex-500 - latin */
 @font-face {
@@ -47,7 +47,7 @@ a {
   font-family: 'Google Sans Flex';
   font-style: normal;
   font-weight: 500;
-  src: url('fonts/google-sans-flex-v16-latin-500.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('/fonts/google-sans-flex-v16-latin-500.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 /* google-sans-flex-600 - latin */
 @font-face {
@@ -55,7 +55,7 @@ a {
   font-family: 'Google Sans Flex';
   font-style: normal;
   font-weight: 600;
-  src: url('fonts/google-sans-flex-v16-latin-600.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('/fonts/google-sans-flex-v16-latin-600.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 /* google-sans-flex-700 - latin */
 @font-face {
@@ -63,7 +63,7 @@ a {
   font-family: 'Google Sans Flex';
   font-style: normal;
   font-weight: 700;
-  src: url('fonts/google-sans-flex-v16-latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('/fonts/google-sans-flex-v16-latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 /* google-sans-flex-800 - latin */
 @font-face {
@@ -71,7 +71,7 @@ a {
   font-family: 'Google Sans Flex';
   font-style: normal;
   font-weight: 800;
-  src: url('fonts/google-sans-flex-v16-latin-800.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('/fonts/google-sans-flex-v16-latin-800.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
 ul, ol {
